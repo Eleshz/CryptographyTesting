@@ -16,7 +16,7 @@ int main(void) {
     using namespace ftxui;
 
     // Define the document
-    Element HomeScreen =
+    Element HomeScreenTitle =
         vbox({
             vbox({
                  text("    ______ __     ______ _____  __  __ _____  _  _____") | bold | color(Color::GreenLight),
@@ -44,10 +44,10 @@ int main(void) {
          }) | border;
 
     auto screen = Screen::Create(
-        Dimension::Fit(HomeScreen),       // Width
-        Dimension::Fit(HomeScreen) // Height
+        Dimension::Fit(HomeScreenTitle),       // Width
+        Dimension::Fit(HomeScreenTitle) // Height
     );
-    Render(screen, HomeScreen);
+    Render(screen, HomeScreenTitle);
     screen.Print();
 
     return EXIT_SUCCESS;
