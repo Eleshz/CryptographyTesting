@@ -6,12 +6,49 @@
 #include "ftxui/component/component_base.hpp"      // for ComponentBase
 #include "ftxui/component/screen_interactive.hpp"  // for ScreenInteractive
 #include "ftxui/dom/elements.hpp"  // for separator, gauge, text, Element, operator|, vbox, border
+#include "ftxui/dom/node.hpp"      // for Render
+#include "ftxui/screen/color.hpp"  // for ftxui
+#include <ftxui/screen/screen.hpp>        // for Full, Screen
 #include <ftxui/dom/elements.hpp>
 #include <ftxui/screen/screen.hpp>
 
 int main(void) {
-	using namespace ftxui;
+    using namespace ftxui;
 
-	text("I am a piece of text");
+    // Define the document
+    Element HomeScreen =
+        vbox({
+            vbox({
+                 text("    ______ __     ______ _____  __  __ _____  _  _____") | bold | color(Color::GreenLight),
+                 text("   / ____// /    / ____// ___/ / / / //__  / ( )/ ___/") | bold | color(Color::GreenLight),
+                 text("  / __/  / /    / __/   \\__ \\ / /_/ /   / /  |/ \\__ \\ ") | bold | color(Color::GreenLight),
+                 text(" / /___ / /___ / /___  ___/ // __  /   / /__   ___/ / ") | bold | color(Color::GreenLight),
+                 text("/_____//_____//_____/ /____//_/ /_/   /____/  /____/  ") | bold | color(Color::GreenLight),
+            }),
+            vbox({
+                 text("   ______ ____ __  __ ____  ______ ____   ______ ____   ___     ____   __  ____  __") | bold | color(Color::GreenLight),
+                 text("  / ____// __ \\\\ \\/ // __ \\/_  __// __ \\ / ____// __ \\ /   |   / __ \\ / / / /\\ \\/ /") | bold | color(Color::GreenLight),
+                 text(" / /    / /_/ / \\  // /_/ / / /  / / / // / __ / /_/ // /| |  / /_/ // /_/ /  \\  / ") | bold | color(Color::GreenLight),
+                 text("/ /___ / _, _/  / // ____/ / /  / /_/ // /_/ // _, _// ___ | / ____// __  /   / /  ") | bold | color(Color::GreenLight),
+                 text("\\____//_/ |_|  /_//_/     /_/   \\____/ \\____//_/ |_|/_/  |_|/_/    /_/ /_/   /_/   ") | bold | color(Color::GreenLight),
+            }),
+            vbox({
+                 text("                                                   ") | bold | color(Color::GreenLight),
+                 text("  ______ __  __ ____ _   __ ______") | bold | color(Color::GreenLight),
+                 text(" /_  __// / / //  _// | / // ____/") | bold | color(Color::GreenLight),
+                 text("  / /  / /_/ / / / /  |/ // / __  ") | bold | color(Color::GreenLight),
+                 text(" / /  / __  /_/ / / /|  // /_/ /  ") | bold | color(Color::GreenLight),
+                 text("/_/  /_/ /_//___//_/ |_/ \\____/   ") | bold | color(Color::GreenLight),
+            }),
 
+         }) | border;
+
+    auto screen = Screen::Create(
+        Dimension::Fit(HomeScreen),       // Width
+        Dimension::Fit(HomeScreen) // Height
+    );
+    Render(screen, HomeScreen);
+    screen.Print();
+
+    return EXIT_SUCCESS;
 }
