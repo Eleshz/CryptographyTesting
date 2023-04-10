@@ -18,7 +18,7 @@ int main(void) {
 
     using namespace ftxui;
 
-    // Define the document
+    // Define TitleScreen
     Element HomeScreenTitle =
         vbox({
             vbox({
@@ -54,6 +54,11 @@ int main(void) {
 
     Render(TitleScreen, HomeScreenTitle);
     TitleScreen.Print();
+
+    auto ExitButton = Container::Horizontal({
+      Button(
+          "Exit Program", [&] { return 0; }, ButtonOption::Animated(Color::Red)),
+    });
 
     return EXIT_SUCCESS;
 }
