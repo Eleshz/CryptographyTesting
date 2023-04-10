@@ -12,7 +12,10 @@
 #include <ftxui/dom/elements.hpp>
 #include <ftxui/screen/screen.hpp>
 
+
 int main(void) {
+
+
     using namespace ftxui;
 
     // Define the document
@@ -43,12 +46,14 @@ int main(void) {
 
          }) | border;
 
-    auto screen = Screen::Create(
-        Dimension::Fit(HomeScreenTitle),       // Width
-        Dimension::Fit(HomeScreenTitle) // Height
+    
+
+    auto TitleScreen = Screen::Create(
+        Dimension::Fit(HomeScreenTitle),/*Width*/Dimension::Fit(HomeScreenTitle) // Height
     );
-    Render(screen, HomeScreenTitle);
-    screen.Print();
+
+    Render(TitleScreen, HomeScreenTitle);
+    TitleScreen.Print();
 
     return EXIT_SUCCESS;
 }
