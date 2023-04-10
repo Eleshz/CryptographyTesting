@@ -1,6 +1,7 @@
 ﻿#include <memory>  // for shared_ptr, __shared_ptr_access
 #include <string>  // for operator+, to_string
 #include <cstdlib>
+#include <conio.h>
 
 #include "ftxui/component/captured_mouse.hpp"  // for ftxui
 #include "ftxui/component/component.hpp"  // for Button, Horizontal, Renderer
@@ -13,11 +14,17 @@
 #include <ftxui/dom/elements.hpp>
 #include <ftxui/screen/screen.hpp>
 
+void reset();
+
+void reset()
+{
+    system("cls");
+}
 
 int main() {
 
-
     using namespace ftxui;
+
 
     // Define TitleScreen
     Element HomeScreenTitle =
@@ -57,9 +64,11 @@ int main() {
     auto ExitButton = Container::Horizontal({
       Button(
           "Exit Program", [&] { std::exit(0); }, ButtonOption::Animated(Color::Red)),
+      Button(
+          "Reset UI", [&] { reset(); }, ButtonOption::Animated(Color::BlueLight)),
         });
 
-    auto GIANTBUTTON = Renderer(ExitButton, [&] {
+    auto ButtonExit = Renderer(ExitButton, [&] {
         return vbox({
 
             ExitButton->Render() ,
@@ -67,8 +76,13 @@ int main() {
         }) | size(WIDTH, EQUAL, 60) | size(HEIGHT, EQUAL, 10) | borderEmpty | borderEmpty;
     }) ; 
 
+
+
     auto screen = ScreenInteractive::FitComponent();
-    screen.Loop(GIANTBUTTON);
+    screen.Loop(ButtonExit);
+
+
+
 
     return EXIT_SUCCESS;
 }
