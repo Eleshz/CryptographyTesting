@@ -1,0 +1,24 @@
+﻿################################################################################
+# This .gitignore file was automatically created by Microsoft(R) Visual Studio.
+################################################################################
+
+/.vs
+/.vscode
+/Cryptogr.0aa386e2.tlog
+/x64/Debug
+/vcpkg.applocal.log
+/vc143.pdb
+/vc143.idb
+/Testing.obj
+/CryptographyTesting.vcxproj.user
+/CryptographyTesting.vcxproj.filters
+/CryptographyTesting.vcxproj.FileListAbsolute.txt
+/CryptographyTesting.vcxproj
+/CryptographyTesting.sln
+/CryptographyTesting.pdb
+/CryptographyTesting.log
+/CryptographyTesting.ilk
+/CryptographyTesting.exe.recipe
+/CryptographyTesting.exe
+/CryptographyTesting.Build.CppClean.log
+/color_info_sorted_2d.ipp
