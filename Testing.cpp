@@ -45,9 +45,7 @@ int main() {
                  text("/_/  /_/ /_//___//_/ |_/ \\____/   ") | bold | color(Color::GreenLight),
             }),
 
-         }) | border;
-
-    
+         }) | borderEmpty;
 
     auto TitleScreen = Screen::Create(
         Dimension::Fit(HomeScreenTitle),/*Width*/Dimension::Fit(HomeScreenTitle) // Height
@@ -59,15 +57,15 @@ int main() {
     auto ExitButton = Container::Horizontal({
       Button(
           "Exit Program", [&] { std::exit(0); }, ButtonOption::Animated(Color::Red)),
-     });
+        });
 
     auto GIANTBUTTON = Renderer(ExitButton, [&] {
         return vbox({
-            vbox({
-            }),
-            ExitButton->Render(),
-            });
-        });
+
+            ExitButton->Render() ,
+
+        }) | size(WIDTH, EQUAL, 60) | size(HEIGHT, EQUAL, 10) | borderEmpty | borderEmpty;
+    }) ; 
 
     auto screen = ScreenInteractive::FitComponent();
     screen.Loop(GIANTBUTTON);
