@@ -3,7 +3,6 @@
 #include <cstdlib>
 #include <conio.h>
 #include <windows.h>
-
 #include "ftxui/component/captured_mouse.hpp"  // for ftxui
 #include "ftxui/component/component.hpp"  // for Button, Horizontal, Renderer
 #include "ftxui/component/component_base.hpp"      // for ComponentBase
@@ -15,10 +14,10 @@
 #include <ftxui/dom/elements.hpp>
 #include <ftxui/screen/screen.hpp>
 
-
 int main() {
 
     using namespace ftxui;
+
 
     // Define TitleScreen
     Element HomeScreenTitle =
@@ -38,6 +37,7 @@ int main() {
                  text("\\____//_/ |_|  /_//_/     /_/   \\____/ \\____//_/ |_|/_/  |_|/_/    /_/ /_/   /_/   ") | bold | color(Color::GreenLight),
             }),
             vbox({
+                 text("                                                   ") | bold | color(Color::GreenLight),
                  text("  ______ __  __ ____ _   __ ______") | bold | color(Color::GreenLight),
                  text(" /_  __// / / //  _// | / // ____/") | bold | color(Color::GreenLight),
                  text("  / /  / /_/ / / / /  |/ // / __  ") | bold | color(Color::GreenLight),
@@ -45,7 +45,7 @@ int main() {
                  text("/_/  /_/ /_//___//_/ |_/ \\____/   ") | bold | color(Color::GreenLight),
             }),
 
-         }) | borderEmpty;
+            }) | borderEmpty;
 
     auto TitleScreen = Screen::Create(
         Dimension::Fit(HomeScreenTitle),/*Width*/Dimension::Fit(HomeScreenTitle) // Height
@@ -55,7 +55,7 @@ int main() {
     TitleScreen.Print();
 
     auto ExitButton = Container::Horizontal({
-      Button(                                                            
+      ftxui::Button(
           "Exit Program", [&] { std::exit(0); }, ButtonOption::Animated(Color::Red)),
         });
 
@@ -64,8 +64,10 @@ int main() {
 
             ExitButton->Render() ,
 
-        }) | size(WIDTH, EQUAL, 60) | size(HEIGHT, EQUAL, 10) | borderEmpty | borderEmpty;
-    });
+            }) | size(WIDTH, EQUAL, 60) | size(HEIGHT, EQUAL, 10) | borderEmpty | borderEmpty;
+        });
+
+
 
     auto screen = ScreenInteractive::FitComponent();
     screen.Loop(ButtonExit);
