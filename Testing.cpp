@@ -55,7 +55,7 @@ int main() {
     TitleScreen.Print();
 
     auto ExitButton = Container::Horizontal({
-      ftxui::Button(
+      Button(
           "Exit Program", [&] { std::exit(0); }, ButtonOption::Animated(Color::Red)),
         });
 
@@ -66,8 +66,6 @@ int main() {
 
             }) | size(WIDTH, EQUAL, 60) | size(HEIGHT, EQUAL, 10) | borderEmpty | borderEmpty;
         });
-
-
 
     auto screen = ScreenInteractive::FitComponent();
     screen.Loop(ButtonExit);
