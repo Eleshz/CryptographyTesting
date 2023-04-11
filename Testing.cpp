@@ -54,20 +54,20 @@ int main() {
     Render(TitleScreen, HomeScreenTitle);
     TitleScreen.Print();
 
-    auto ExitButton = Container::Horizontal({
+    auto ExitButtonElement = Container::Horizontal({
       Button(
           "Exit Program", [&] { std::exit(0); }, ButtonOption::Animated(Color::Red)),
         });
 
-    auto ButtonExit = Renderer(ExitButton, [&] {
+    auto ExitButton = Renderer(ExitButtonElement, [&] {
         return vbox({
 
-            ExitButton->Render() ,
+            ExitButtonElement->Render() ,
 
             }) | size(WIDTH, EQUAL, 60) | size(HEIGHT, EQUAL, 10) | borderEmpty | borderEmpty;
         });
 
     auto screen = ScreenInteractive::FitComponent();
-    screen.Loop(ButtonExit);
+    screen.Loop(ExitButton);
     return EXIT_SUCCESS;
 }
