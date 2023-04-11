@@ -2,6 +2,7 @@
 #include <string>  // for operator+, to_string
 #include <cstdlib>
 #include <conio.h>
+#include <windows.h>
 
 #include "ftxui/component/captured_mouse.hpp"  // for ftxui
 #include "ftxui/component/component.hpp"  // for Button, Horizontal, Renderer
@@ -14,17 +15,10 @@
 #include <ftxui/dom/elements.hpp>
 #include <ftxui/screen/screen.hpp>
 
-void reset();
-
-void reset()
-{
-    system("cls");
-}
 
 int main() {
 
     using namespace ftxui;
-
 
     // Define TitleScreen
     Element HomeScreenTitle =
@@ -44,7 +38,6 @@ int main() {
                  text("\\____//_/ |_|  /_//_/     /_/   \\____/ \\____//_/ |_|/_/  |_|/_/    /_/ /_/   /_/   ") | bold | color(Color::GreenLight),
             }),
             vbox({
-                 text("                                                   ") | bold | color(Color::GreenLight),
                  text("  ______ __  __ ____ _   __ ______") | bold | color(Color::GreenLight),
                  text(" /_  __// / / //  _// | / // ____/") | bold | color(Color::GreenLight),
                  text("  / /  / /_/ / / / /  |/ // / __  ") | bold | color(Color::GreenLight),
@@ -62,10 +55,8 @@ int main() {
     TitleScreen.Print();
 
     auto ExitButton = Container::Horizontal({
-      Button(
+      Button(                                                            
           "Exit Program", [&] { std::exit(0); }, ButtonOption::Animated(Color::Red)),
-      Button(
-          "Reset UI", [&] { reset(); }, ButtonOption::Animated(Color::BlueLight)),
         });
 
     auto ButtonExit = Renderer(ExitButton, [&] {
@@ -74,15 +65,9 @@ int main() {
             ExitButton->Render() ,
 
         }) | size(WIDTH, EQUAL, 60) | size(HEIGHT, EQUAL, 10) | borderEmpty | borderEmpty;
-    }) ; 
-
-
+    });
 
     auto screen = ScreenInteractive::FitComponent();
     screen.Loop(ButtonExit);
-
-
-
-
     return EXIT_SUCCESS;
 }
