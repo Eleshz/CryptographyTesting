@@ -26,7 +26,6 @@ int main() {
     using namespace ftxui;
 
     TitleText();
-    TitleButtons(SCMBLRText);
 
     return EXIT_SUCCESS;
 }
@@ -69,26 +68,4 @@ void TitleText() {
 
     Render(TitleScreen, HomeScreenTitle);
     TitleScreen.Print();
-}
-
-void TitleButtons(std::string ScramblerText) {
-
-    using namespace ftxui;
-
-    auto ExitButtonElement = Container::Horizontal({
-         Button( "Exit Program", [&] { std::exit(0); }, ButtonOption::Animated(Color::Red)),
-         Button( ScramblerText, [&] { std::exit(0); }, ButtonOption::Animated(Color::Green)),
-    });
-
-    auto ExitButton = Renderer(ExitButtonElement, [&] {
-        return vbox({
-
-            ExitButtonElement->Render() ,
-
-            }) | size(WIDTH, EQUAL, 60) | size(HEIGHT, EQUAL, 10) | borderEmpty | borderEmpty;
-        });
-
-    auto screen = ScreenInteractive::FitComponent();
-    screen.Loop(ExitButton);
-
 }
