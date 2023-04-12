@@ -63,6 +63,8 @@ std::string TitleText() {
 
     Screen TitleScreen = Screen::Create(Dimension::Fixed(88),Dimension::Fixed(16));
 
+    std::cout << TitleScreen.ResetPosition(true);
+
     Render(TitleScreen, HomeScreenTitle);
     TitleScreen.Print();
     // std::cout << TitleScreen.ResetPosition(true);
