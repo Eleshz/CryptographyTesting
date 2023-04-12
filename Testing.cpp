@@ -16,7 +16,7 @@
 #include <ftxui/screen/screen.hpp>
 
 std::string TitleText();
-std::string TitleExitButton();
+std::string TitleButtons();
 std::string TitleGOcipherButton(std::string ScramblerText);
 
 std::string SelectedScrambler(int selection);
@@ -28,8 +28,7 @@ int main() {
     using namespace ftxui;
 
     TitleText();
-    TitleExitButton();
-    TitleGOcipherButton(SCMBLRText);
+    TitleButtons();
 
     return EXIT_SUCCESS;
 }
@@ -73,48 +72,26 @@ std::string TitleText() {
     return "OK";
 }
 
-std::string TitleExitButton() {
+std::string TitleButtons() {
 
     using namespace ftxui;
 
-    Component TitleButtonExitCOM = Container::Horizontal({
+    Component TitleButtonsCOM = Container::Vertical({
     Button(
         "Exit Program?", [&] { exit(0); }, ButtonOption::Animated(Color::Red)),
+    Button(
+        SCMBLRText, [&] { exit(0); }, ButtonOption::Animated(Color::GreenLight)),
         });
 
-    auto TitleButtonExitBOX = Renderer(TitleButtonExitCOM, [&] {
+    auto TitleButtonsBOX = Renderer(TitleButtonsCOM, [&] {
         return vbox({
-                   separator(),
-                   TitleButtonExitCOM->Render(),
-        });
+                   TitleButtonsCOM->Render(),
+        }) | borderDouble;
     });
 
-    auto HomeScreenButtonExit = ScreenInteractive::FitComponent();
+    auto HomeScreenButtons = ScreenInteractive::FitComponent();
 
-    HomeScreenButtonExit.Loop(TitleButtonExitBOX);
-
-    return "OK";
-}
-
-std::string TitleGOcipherButton(std::string ScramblerText) {
-
-    using namespace ftxui;
-
-    Component TitleButtonGoCipherCOM = Container::Horizontal({
-    Button(
-        ScramblerText, [&] { exit(0); }, ButtonOption::Animated(Color::Green3)),
-        });
-
-    auto TitleButtonGoCipherBOX = Renderer(TitleButtonGoCipherCOM, [&] {
-        return vbox({
-                   separator(),
-                   TitleButtonGoCipherCOM->Render(),
-            });
-        });
-
-    auto HomeScreenButtonGoCipher = ScreenInteractive::FitComponent();
-
-    HomeScreenButtonGoCipher.Loop(TitleButtonGoCipherBOX);
+    HomeScreenButtons.Loop(TitleButtonsBOX);
 
     return "OK";
 }
