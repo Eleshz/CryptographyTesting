@@ -40,25 +40,25 @@ std::string TitleText() {
     Element HomeScreenTitle =
         vbox({
             vbox({
-                 text("    ______ __     ______ _____  __  __ _____  _  _____") | color(Color::GreenLight),
-                 text("   / ____// /    / ____// ___/ / / / //__  / ( )/ ___/") | color(Color::GreenLight),
-                 text("  / __/  / /    / __/   \\__ \\ / /_/ /   / /  |/ \\__ \\ ") | color(Color::GreenLight),
-                 text(" / /___ / /___ / /___  ___/ // __  /   / /__   ___/ / ") | color(Color::GreenLight),
-                 text("/_____//_____//_____/ /____//_/ /_/   /____/  /____/  ") | color(Color::GreenLight),
+                 text("    ______ __     ______ _____  __  __ _____  _  _____") | color(Color::GreenLight) | bgcolor(Color::Grey19),
+                 text("   / ____// /    / ____// ___/ / / / //__  / ( )/ ___/") | color(Color::GreenLight) | bgcolor(Color::Grey19),
+                 text("  / __/  / /    / __/   \\__ \\ / /_/ /   / /  |/ \\__ \\ ") | color(Color::GreenLight) | bgcolor(Color::Grey19),
+                 text(" / /___ / /___ / /___  ___/ // __  /   / /__   ___/ / ") | color(Color::GreenLight) | bgcolor(Color::Grey19),
+                 text("/_____//_____//_____/ /____//_/ /_/   /____/  /____/  ") | color(Color::GreenLight) | bgcolor(Color::Grey19),
             }),
             vbox({
-                 text("   ______ ____ __  __ ____  ______ ____   ______ ____   ___     ____   __  ____  __") | color(Color::GreenLight),
-                 text("  / ____// __ \\\\ \\/ // __ \\/_  __// __ \\ / ____// __ \\ /   |   / __ \\ / / / /\\ \\/ /") | color(Color::GreenLight),
-                 text(" / /    / /_/ / \\  // /_/ / / /  / / / // / __ / /_/ // /| |  / /_/ // /_/ /  \\  / ") | color(Color::GreenLight),
-                 text("/ /___ / _, _/  / // ____/ / /  / /_/ // /_/ // _, _// ___ | / ____// __  /   / /  ") | color(Color::GreenLight),
-                 text("\\____//_/ |_|  /_//_/     /_/   \\____/ \\____//_/ |_|/_/  |_|/_/    /_/ /_/   /_/   ") | color(Color::GreenLight),
+                 text("   ______ ____ __  __ ____  ______ ____   ______ ____   ___     ____   __  ____  __") | color(Color::GreenLight) | bgcolor(Color::Grey19),
+                 text("  / ____// __ \\\\ \\/ // __ \\/_  __// __ \\ / ____// __ \\ /   |   / __ \\ / / / /\\ \\/ /") | color(Color::GreenLight) | bgcolor(Color::Grey19),
+                 text(" / /    / /_/ / \\  // /_/ / / /  / / / // / __ / /_/ // /| |  / /_/ // /_/ /  \\  / ") | color(Color::GreenLight) | bgcolor(Color::Grey19),
+                 text("/ /___ / _, _/  / // ____/ / /  / /_/ // /_/ // _, _// ___ | / ____// __  /   / /  ") | color(Color::GreenLight) | bgcolor(Color::Grey19),
+                 text("\\____//_/ |_|  /_//_/     /_/   \\____/ \\____//_/ |_|/_/  |_|/_/    /_/ /_/   /_/   ") | color(Color::GreenLight) | bgcolor(Color::Grey19),
             }),
             vbox({
-                 text("  ______ __  __ ____ _   __ ______") | color(Color::GreenLight),
-                 text(" /_  __// / / //  _// | / // ____/") | color(Color::GreenLight),
-                 text("  / /  / /_/ / / / /  |/ // / __  ") | color(Color::GreenLight),
-                 text(" / /  / __  /_/ / / /|  // /_/ /  ") | color(Color::GreenLight),
-                 text("/_/  /_/ /_//___//_/ |_/ \\____/   ") | color(Color::GreenLight),
+                 text("  ______ __  __ ____ _   __ ______") | color(Color::GreenLight) | bgcolor(Color::Grey19),
+                 text(" /_  __// / / //  _// | / // ____/") | color(Color::GreenLight) | bgcolor(Color::Grey19),
+                 text("  / /  / /_/ / / / /  |/ // / __  ") | color(Color::GreenLight) | bgcolor(Color::Grey19),
+                 text(" / /  / __  /_/ / / /|  // /_/ /  ") | color(Color::GreenLight) | bgcolor(Color::Grey19),
+                 text("/_/  /_/ /_//___//_/ |_/ \\____/   ") | color(Color::GreenLight) | bgcolor(Color::Grey19),
             }),
 
             });
@@ -85,8 +85,8 @@ std::string TitleButtons() {
 
     auto TitleButtonsBOX = Renderer(TitleButtonsCOM, [&] {
         return vbox({
-                   TitleButtonsCOM->Render(),
-        }) | borderDouble;
+            TitleButtonsCOM->Render(),
+            }) | borderStyled(HEAVY); 
     });
 
     auto HomeScreenButtons = ScreenInteractive::FitComponent();
