@@ -76,9 +76,9 @@ std::string TitleButtons(std::string ScramblerText) {
     
     using namespace ftxui;
 
-
-
     auto TitleButtonScreen = Screen::Create(Dimension::Fixed(15), Dimension::Fixed(15));
+
+    std::cout << TitleButtonScreen.ResetPosition(true);
     
     return "OK";
 }
