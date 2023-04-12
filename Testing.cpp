@@ -14,10 +14,22 @@
 #include <ftxui/dom/elements.hpp>
 #include <ftxui/screen/screen.hpp>
 
+void TitleText();
+void TitleExitButton();
+
 int main() {
 
     using namespace ftxui;
 
+    TitleText();
+    TitleExitButton();
+
+    return EXIT_SUCCESS;
+}
+
+void TitleText() {
+
+    using namespace ftxui;
 
     // Define TitleScreen
     Element HomeScreenTitle =
@@ -53,10 +65,15 @@ int main() {
 
     Render(TitleScreen, HomeScreenTitle);
     TitleScreen.Print();
+}
+
+void TitleExitButton() {
+
+    using namespace ftxui;
 
     auto ExitButtonElement = Container::Horizontal({
-      Button(
-          "Exit Program", [&] { std::exit(0); }, ButtonOption::Animated(Color::Red)),
+  Button(
+      "Exit Program", [&] { std::exit(0); }, ButtonOption::Animated(Color::Red)),
         });
 
     auto ExitButton = Renderer(ExitButtonElement, [&] {
@@ -69,5 +86,5 @@ int main() {
 
     auto screen = ScreenInteractive::FitComponent();
     screen.Loop(ExitButton);
-    return EXIT_SUCCESS;
+
 }
