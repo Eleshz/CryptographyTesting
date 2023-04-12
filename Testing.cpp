@@ -38,32 +38,30 @@ std::string TitleText() {
     Element HomeScreenTitle =
         vbox({
             vbox({
-                 text("    ______ __     ______ _____  __  __ _____  _  _____")| color(Color::GreenLight),
-                 text("   / ____// /    / ____// ___/ / / / //__  / ( )/ ___/")| color(Color::GreenLight),
-                 text("  / __/  / /    / __/   \\__ \\ / /_/ /   / /  |/ \\__ \\ ")| color(Color::GreenLight),
-                 text(" / /___ / /___ / /___  ___/ // __  /   / /__   ___/ / ")| color(Color::GreenLight),
-                 text("/_____//_____//_____/ /____//_/ /_/   /____/  /____/  ")| color(Color::GreenLight),
+                 text("    ______ __     ______ _____  __  __ _____  _  _____") | color(Color::GreenLight),
+                 text("   / ____// /    / ____// ___/ / / / //__  / ( )/ ___/") | color(Color::GreenLight),
+                 text("  / __/  / /    / __/   \\__ \\ / /_/ /   / /  |/ \\__ \\ ") | color(Color::GreenLight),
+                 text(" / /___ / /___ / /___  ___/ // __  /   / /__   ___/ / ") | color(Color::GreenLight),
+                 text("/_____//_____//_____/ /____//_/ /_/   /____/  /____/  ") | color(Color::GreenLight),
             }),
             vbox({
-                 text("   ______ ____ __  __ ____  ______ ____   ______ ____   ___     ____   __  ____  __")| color(Color::GreenLight),
-                 text("  / ____// __ \\\\ \\/ // __ \\/_  __// __ \\ / ____// __ \\ /   |   / __ \\ / / / /\\ \\/ /")| color(Color::GreenLight),
-                 text(" / /    / /_/ / \\  // /_/ / / /  / / / // / __ / /_/ // /| |  / /_/ // /_/ /  \\  / ")| color(Color::GreenLight),
-                 text("/ /___ / _, _/  / // ____/ / /  / /_/ // /_/ // _, _// ___ | / ____// __  /   / /  ")| color(Color::GreenLight),
-                 text("\\____//_/ |_|  /_//_/     /_/   \\____/ \\____//_/ |_|/_/  |_|/_/    /_/ /_/   /_/   ")| color(Color::GreenLight),
+                 text("   ______ ____ __  __ ____  ______ ____   ______ ____   ___     ____   __  ____  __") | color(Color::GreenLight),
+                 text("  / ____// __ \\\\ \\/ // __ \\/_  __// __ \\ / ____// __ \\ /   |   / __ \\ / / / /\\ \\/ /") | color(Color::GreenLight),
+                 text(" / /    / /_/ / \\  // /_/ / / /  / / / // / __ / /_/ // /| |  / /_/ // /_/ /  \\  / ") | color(Color::GreenLight),
+                 text("/ /___ / _, _/  / // ____/ / /  / /_/ // /_/ // _, _// ___ | / ____// __  /   / /  ") | color(Color::GreenLight),
+                 text("\\____//_/ |_|  /_//_/     /_/   \\____/ \\____//_/ |_|/_/  |_|/_/    /_/ /_/   /_/   ") | color(Color::GreenLight),
             }),
             vbox({
-                 text("  ______ __  __ ____ _   __ ______")| color(Color::GreenLight),
-                 text(" /_  __// / / //  _// | / // ____/")| color(Color::GreenLight),
-                 text("  / /  / /_/ / / / /  |/ // / __  ")| color(Color::GreenLight),
-                 text(" / /  / __  /_/ / / /|  // /_/ /  ")| color(Color::GreenLight),
-                 text("/_/  /_/ /_//___//_/ |_/ \\____/   ")| color(Color::GreenLight),
+                 text("  ______ __  __ ____ _   __ ______") | color(Color::GreenLight),
+                 text(" /_  __// / / //  _// | / // ____/") | color(Color::GreenLight),
+                 text("  / /  / /_/ / / / /  |/ // / __  ") | color(Color::GreenLight),
+                 text(" / /  / __  /_/ / / /|  // /_/ /  ") | color(Color::GreenLight),
+                 text("/_/  /_/ /_//___//_/ |_/ \\____/   ") | color(Color::GreenLight),
             }),
 
-        });
+            });
 
-    Screen TitleScreen = Screen::Create(Dimension::Fixed(88),Dimension::Fixed(16));
-
-    std::cout << TitleScreen.ResetPosition(true);
+    Screen TitleScreen = Screen::Create(Dimension::Fixed(88), Dimension::Fixed(16));
 
     Render(TitleScreen, HomeScreenTitle);
     TitleScreen.Print();
@@ -73,12 +71,23 @@ std::string TitleText() {
 }
 
 std::string TitleButtons(std::string ScramblerText) {
-    
+
     using namespace ftxui;
 
-    auto TitleButtonScreen = Screen::Create(Dimension::Fixed(15), Dimension::Fixed(15));
+    Component TitleButtonsCOM = Container::Horizontal({
+    Button(
+        "Exit Program?", [&] { exit(0); }, ButtonOption::Animated(Color::Red)),
+        });
 
-    std::cout << TitleButtonScreen.ResetPosition(true);
-    
+    auto TitleButtonBOX = Renderer(TitleButtonsCOM, [&] {
+        return vbox({
+                   separator(),
+                   TitleButtonsCOM->Render(),
+        });
+    });
+
+    auto HomeScreenButtons = ScreenInteractive::FitComponent();
+    HomeScreenButtons.Loop(TitleButtonBOX);
+
     return "OK";
 }
