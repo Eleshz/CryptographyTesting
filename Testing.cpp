@@ -34,7 +34,6 @@ void TitleText() {
 
     using namespace ftxui;
 
-    // Define TitleScreen
     Element HomeScreenTitle =
         vbox({
             vbox({
@@ -60,11 +59,9 @@ void TitleText() {
                  text("/_/  /_/ /_//___//_/ |_/ \\____/   ") | bold | color(Color::GreenLight),
             }),
 
-            }) | borderEmpty;
+            });
 
-    auto TitleScreen = Screen::Create(
-        Dimension::Fit(HomeScreenTitle),/*Width*/Dimension::Fit(HomeScreenTitle) // Height
-    );
+    auto TitleScreen = Screen::Create(Dimension::Fixed(85),Dimension::Fixed(18));
 
     Render(TitleScreen, HomeScreenTitle);
     TitleScreen.Print();
