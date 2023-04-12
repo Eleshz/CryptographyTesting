@@ -7,6 +7,7 @@
 #include "ftxui/component/component.hpp"  // for Button, Horizontal, Renderer
 #include "ftxui/component/component_base.hpp"      // for ComponentBase
 #include "ftxui/component/screen_interactive.hpp"  // for ScreenInteractive
+#include "ftxui/component/component_options.hpp"   // for ButtonOption
 #include "ftxui/dom/elements.hpp"  // for separator, gauge, text, Element, operator|, vbox, border
 #include "ftxui/dom/node.hpp"      // for Render
 #include "ftxui/screen/color.hpp"  // for ftxui
@@ -15,14 +16,17 @@
 #include <ftxui/screen/screen.hpp>
 
 void TitleText();
-void TitleExitButton();
+void TitleButtons(std::string ScramblerText);
+std::string SelectedScrambler(int selection);
+
+std::string SCMBLRText = "Scramble now!";
 
 int main() {
 
     using namespace ftxui;
 
     TitleText();
-    TitleExitButton();
+    TitleButtons(SCMBLRText);
 
     return EXIT_SUCCESS;
 }
@@ -67,14 +71,14 @@ void TitleText() {
     TitleScreen.Print();
 }
 
-void TitleExitButton() {
+void TitleButtons(std::string ScramblerText) {
 
     using namespace ftxui;
 
     auto ExitButtonElement = Container::Horizontal({
-  Button(
-      "Exit Program", [&] { std::exit(0); }, ButtonOption::Animated(Color::Red)),
-        });
+         Button( "Exit Program", [&] { std::exit(0); }, ButtonOption::Animated(Color::Red)),
+         Button( ScramblerText, [&] { std::exit(0); }, ButtonOption::Animated(Color::Green)),
+    });
 
     auto ExitButton = Renderer(ExitButtonElement, [&] {
         return vbox({
