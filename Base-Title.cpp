@@ -56,25 +56,25 @@ std::string TitleText() {
     Element HomeScreenTitle =
         vbox({
             vbox({
-                 text("    ______ __     ______ _____  __  __ _____  _  _____") | color(Color::GreenLight) | bgcolor(Color::Grey19),
-                 text("   / ____// /    / ____// ___/ / / / //__  / ( )/ ___/") | color(Color::GreenLight) | bgcolor(Color::Grey19),
-                 text("  / __/  / /    / __/   \\__ \\ / /_/ /   / /  |/ \\__ \\ ") | color(Color::GreenLight) | bgcolor(Color::Grey19),
-                 text(" / /___ / /___ / /___  ___/ // __  /   / /__   ___/ / ") | color(Color::GreenLight) | bgcolor(Color::Grey19),
-                 text("/_____//_____//_____/ /____//_/ /_/   /____/  /____/  ") | color(Color::GreenLight) | bgcolor(Color::Grey19),
+                 text("    ______ __     ______ _____  __  __ _____  _  _____") | color(Color::GreenLight),
+                 text("   / ____// /    / ____// ___/ / / / //__  / ( )/ ___/") | color(Color::GreenLight),
+                 text("  / __/  / /    / __/   \\__ \\ / /_/ /   / /  |/ \\__ \\ ") | color(Color::GreenLight),
+                 text(" / /___ / /___ / /___  ___/ // __  /   / /__   ___/ / ") | color(Color::GreenLight),
+                 text("/_____//_____//_____/ /____//_/ /_/   /____/  /____/  ") | color(Color::GreenLight),
             }),
             vbox({
-                 text("   ______ ____ __  __ ____  ______ ____   ______ ____   ___     ____   __  ____  __") | color(Color::GreenLight) | bgcolor(Color::Grey19),
-                 text("  / ____// __ \\\\ \\/ // __ \\/_  __// __ \\ / ____// __ \\ /   |   / __ \\ / / / /\\ \\/ /") | color(Color::GreenLight) | bgcolor(Color::Grey19),
-                 text(" / /    / /_/ / \\  // /_/ / / /  / / / // / __ / /_/ // /| |  / /_/ // /_/ /  \\  / ") | color(Color::GreenLight) | bgcolor(Color::Grey19),
-                 text("/ /___ / _, _/  / // ____/ / /  / /_/ // /_/ // _, _// ___ | / ____// __  /   / /  ") | color(Color::GreenLight) | bgcolor(Color::Grey19),
-                 text("\\____//_/ |_|  /_//_/     /_/   \\____/ \\____//_/ |_|/_/  |_|/_/    /_/ /_/   /_/   ") | color(Color::GreenLight) | bgcolor(Color::Grey19),
+                 text("   ______ ____ __  __ ____  ______ ____   ______ ____   ___     ____   __  ____  __") | color(Color::GreenLight),
+                 text("  / ____// __ \\\\ \\/ // __ \\/_  __// __ \\ / ____// __ \\ /   |   / __ \\ / / / /\\ \\/ /") | color(Color::GreenLight),
+                 text(" / /    / /_/ / \\  // /_/ / / /  / / / // / __ / /_/ // /| |  / /_/ // /_/ /  \\  / ") | color(Color::GreenLight),
+                 text("/ /___ / _, _/  / // ____/ / /  / /_/ // /_/ // _, _// ___ | / ____// __  /   / /  ") | color(Color::GreenLight),
+                 text("\\____//_/ |_|  /_//_/     /_/   \\____/ \\____//_/ |_|/_/  |_|/_/    /_/ /_/   /_/   ") | color(Color::GreenLight),
             }),
             vbox({
-                 text("  ______ __  __ ____ _   __ ______") | color(Color::GreenLight) | bgcolor(Color::Grey19),
-                 text(" /_  __// / / //  _// | / // ____/") | color(Color::GreenLight) | bgcolor(Color::Grey19),
-                 text("  / /  / /_/ / / / /  |/ // / __  ") | color(Color::GreenLight) | bgcolor(Color::Grey19),
-                 text(" / /  / __  /_/ / / /|  // /_/ /  ") | color(Color::GreenLight) | bgcolor(Color::Grey19),
-                 text("/_/  /_/ /_//___//_/ |_/ \\____/   ") | color(Color::GreenLight) | bgcolor(Color::Grey19),
+                 text("  ______ __  __ ____ _   __ ______") | color(Color::GreenLight),
+                 text(" /_  __// / / //  _// | / // ____/") | color(Color::GreenLight),
+                 text("  / /  / /_/ / / / /  |/ // / __  ") | color(Color::GreenLight),
+                 text(" / /  / __  /_/ / / /|  // /_/ /  ") | color(Color::GreenLight),
+                 text("/_/  /_/ /_//___//_/ |_/ \\____/   ") | color(Color::GreenLight),
             }),
 
             });
@@ -100,8 +100,9 @@ std::string TitleInteractives() {
     // Put the stuff into the menu and send render
     auto ChoiceMenuRender = Renderer(ChoiceMenu, [&] {
         return vbox({
-            ChoiceMenu->Render() | vscroll_indicator | frame |
-            size(HEIGHT, LESS_THAN, 10) | borderStyled(HEAVY) });
+            ChoiceMenu->Render()
+            
+            | vscroll_indicator | frame | size(HEIGHT, LESS_THAN, 10) | borderStyled(HEAVY) });
         });
 
     // Make the buttons
@@ -114,11 +115,45 @@ std::string TitleInteractives() {
 
     // Put the stuff into the box(?) and send render 
     auto TitleButtonsBOX = Renderer(TitleButtonsCOM, [&] {
-        return vbox({ hbox(text("Selected: "), text((MenuChoice[selected]))), TitleButtonsCOM->Render(),}) | borderStyled(HEAVY) | size(WIDTH, EQUAL, 40);
+        return vbox({ hbox(text("Selected: "), text((MenuChoice[selected]))),
+
+        TitleButtonsCOM->Render(),})
+        
+        | borderStyled(HEAVY) | size(WIDTH, EQUAL, 40);
+
     });
 
+    auto Instructions = Renderer([&] {
+        return vbox({
+
+               vbox({
+                    text("Paste/Write what you want to encode into the"),
+                    text("Input.txt file") | color(Color::YellowLight),
+               }),
+
+               separator(),
+               vbox({
+                    text("Then get your encoded text in the"),
+                    text("Output.txt file") | color(Color::YellowLight),
+               }),
+
+               separator(),
+               vbox({
+                    text("You will be provided with a key"),
+                    text("At the bottom of the text") | color(Color::BlueViolet),
+               }),
+
+               separator(),
+               vbox({
+                    text("Use the key to decode the text"),
+                    text("Put it into the Key.txt file") | color(Color::Red),
+               }),
+
+            }) | borderDouble;
+        });
+
     // Put all together into a component
-    auto BothTogether = Container::Horizontal({ TitleButtonsBOX , ChoiceMenuRender});
+    auto BothTogether = Container::Horizontal({ TitleButtonsBOX , ChoiceMenuRender, Instructions});
     // Make new screen the size of the component
     auto InterScreen = ScreenInteractive::FitComponent();
 
