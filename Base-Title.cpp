@@ -19,23 +19,21 @@
 std::string TitleText();
 std::string TitleInteractives();
 
-std::string SCMBLRText = "Scramble now!";
-
 const std::vector<std::string> MenuChoice{ "ADFGVX cipher", "Affine Cipher", "Alberti Cipher", "Alphabet Cipher", "Alphabetum Kaldeorum", "Arnold Cipher", "Ary Numeration", "Atbash", "Autokey Cipher",
-                                     "Bacon's Cipher", "Beaufort Cipher", "Bifid Cipher", "Book Cipher", "Thomas Brierley Grave Cipher",
-                                     "Caesar Cipher", "Chaocipher", "Copiale Cipher",
-                                     "DRYAD",
-                                     "Four - square cipher",
-                                     "Great Cipher", "Grille",
-                                     "Hill Cipher",
-                                     "M-94", "Mlecchita vikalpa",
-                                     "Nihilist Cipher", "Null Cipher",
-                                     "Pig Latin", "Pigpen Cipher", "Playfair Cipher", "Poem Code", "Polyalphabetic Cipher", "Polybius Square",
-                                     "Rail Fence Cipher", "Rasterschlüssel 44", "Reihenschieber", "Reservehandverfahren", "ROT13", "Running Key Cipher",
-                                     "Scytale", "Shackle Code" ,"Sheshach" ,"Straddling Checkerboard" ,"Substitution Cipher",
-                                     "Tabula Recta", "Tap Code", "Transposition Cipher", "Trifid Cipher", "Two - Square Cipher",
-                                     "VIC Cipher", "Vigenère Cipher",
-                                     "Wadsworth's cipher", "Wahlwort"};
+                                           "Bacon's Cipher", "Beaufort Cipher", "Bifid Cipher", "Book Cipher", "Thomas Brierley Grave Cipher",
+                                           "Caesar Cipher", "Chaocipher", "Copiale Cipher",
+                                           "DRYAD",
+                                           "Four - square cipher",
+                                           "Great Cipher", "Grille",
+                                           "Hill Cipher",
+                                           "M-94", "Mlecchita vikalpa",
+                                           "Nihilist Cipher", "Null Cipher",
+                                           "Pig Latin", "Pigpen Cipher", "Playfair Cipher", "Poem Code", "Polyalphabetic Cipher", "Polybius Square",
+                                           "Rail Fence Cipher", "Rasterschlüssel 44", "Reihenschieber", "Reservehandverfahren", "ROT13", "Running Key Cipher",
+                                           "Scytale", "Shackle Code" ,"Sheshach" ,"Straddling Checkerboard" ,"Substitution Cipher",
+                                           "Tabula Recta", "Tap Code", "Transposition Cipher", "Trifid Cipher", "Two - Square Cipher",
+                                           "VIC Cipher", "Vigenere Cipher",
+                                           "Wadsworth's cipher", "Wahlwort"};
 
 std::span choice{ MenuChoice.begin() , MenuChoice.size() };
 
@@ -96,30 +94,35 @@ std::string TitleInteractives() {
 
     int selected = 0;
 
+    // Make the menu
+    auto ChoiceMenu = Menu(&MenuChoice, &selected);
+
+    // Put the stuff into the menu and send render
+    auto ChoiceMenuRender = Renderer(ChoiceMenu, [&] {
+        return vbox({
+            ChoiceMenu->Render() | vscroll_indicator | frame |
+            size(HEIGHT, LESS_THAN, 10) | borderStyled(HEAVY) });
+        });
+
+    // Make the buttons
     Component TitleButtonsCOM = Container::Vertical({
     Button(
         "Exit Program?", [&] { exit(0); }, ButtonOption::Animated(Color::Red)),
     Button(
-        SCMBLRText, [&] { exit(0); }, ButtonOption::Animated(Color::GreenLight)),
+        "Scramble now!", [&] { exit(0); }, ButtonOption::Animated(Color::GreenLight)),
         });
 
+    // Put the stuff into the box(?) and send render 
     auto TitleButtonsBOX = Renderer(TitleButtonsCOM, [&] {
-        return hbox({
-             TitleButtonsCOM->Render(),
-            }) | borderStyled(HEAVY); 
+        return vbox({ hbox(text("Selected: "), text((MenuChoice[selected]))), TitleButtonsCOM->Render(),}) | borderStyled(HEAVY) | size(WIDTH, EQUAL, 40);
     });
 
-    auto ChoiceMenu = Menu(&MenuChoice, &selected);
-
-    auto ChoiceMenuRender = Renderer(ChoiceMenu, [&] {
-        return vbox({
-            ChoiceMenu->Render() | vscroll_indicator | frame |
-            size(HEIGHT, LESS_THAN, 10) | border });
-        });
-
+    // Put all together into a component
     auto BothTogether = Container::Horizontal({ TitleButtonsBOX , ChoiceMenuRender});
+    // Make new screen the size of the component
     auto InterScreen = ScreenInteractive::FitComponent();
 
+    // Render screen
     InterScreen.Loop(BothTogether);
 
     return "OK";
