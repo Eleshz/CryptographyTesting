@@ -4,6 +4,9 @@
 #include <conio.h>
 #include <windows.h>
 #include <vector>
+#include <map>
+#include <fstream>
+
 #include "ftxui/component/captured_mouse.hpp"  // for ftxui
 #include "ftxui/component/component.hpp"  // for Button, Horizontal, Renderer
 #include "ftxui/component/component_base.hpp"      // for ComponentBase
@@ -15,9 +18,19 @@
 #include <ftxui/screen/screen.hpp>        // for Full, Screen
 #include <ftxui/dom/elements.hpp>
 #include <ftxui/screen/screen.hpp>
+using namespace std;
+
+bool ContinueRender = true;
 
 std::string TitleText();
 std::string TitleInteractives();
+void clear();
+
+
+
+void delete_component(ftxui::Component& component);
+
+std::string EncodeStarter(std::string EncodeSelection);
 
 const std::vector<std::string> MenuChoice{ "ADFGVX cipher", "Affine Cipher", "Alberti Cipher", "Alphabet Cipher", "Alphabetum Kaldeorum", "Arnold Cipher", "Ary Numeration", "Atbash", "Autokey Cipher",
                                            "Bacon's Cipher", "Beaufort Cipher", "Bifid Cipher", "Book Cipher", "Thomas Brierley Grave Cipher",
@@ -37,12 +50,16 @@ const std::vector<std::string> MenuChoice{ "ADFGVX cipher", "Affine Cipher", "Al
 
 std::span choice{ MenuChoice.begin() , MenuChoice.size() };
 
+
+
+
 int main() {
 
     using namespace ftxui;
 
     TitleText();
     TitleInteractives();
+
 
     return EXIT_SUCCESS;
 }
@@ -79,7 +96,7 @@ std::string TitleText() {
 
     Screen TitleScreen = Screen::Create(Dimension::Fixed(88), Dimension::Fixed(16));
 
-    Render(TitleScreen, HomeScreenTitle);
+    ftxui::Render(TitleScreen, HomeScreenTitle);
     TitleScreen.Print();
     // std::cout << TitleScreen.ResetPosition(true);
     // USE THE ABOVE TO CLEAR A SCREEN PLEASE
@@ -103,22 +120,32 @@ std::string TitleInteractives() {
             | vscroll_indicator | frame | size(HEIGHT, LESS_THAN, 10) | borderStyled(HEAVY) });
         });
 
+    
+
+
     // Make the buttons
-    Component TitleButtonsCOM = Container::Vertical({
+    Component TitleTouchies = Container::Vertical({
     Button(
         "Exit Program?", [&] { exit(0); }, ButtonOption::Animated(Color::Red)),
     Button(
-        "Scramble now!", [&] { exit(0); }, ButtonOption::Animated(Color::GreenLight)),
+        "Scramble now!", [&] {EncodeStarter(MenuChoice[selected]);
+    return; }, ButtonOption::Animated(Color::GreenLight)),
+    Button(
+        "Decode", [&] { exit(0); return;}, ButtonOption::Animated(Color::Blue3)),
         });
 
+    if (ContinueRender = false) {
+        return "OK";
+    }
+    else;
+    
+    
+
     // Put the stuff into the box(?) and send render 
-    auto TitleButtonsBOX = Renderer(TitleButtonsCOM, [&] {
+    auto TitleButtonsBOX = Renderer(TitleTouchies, [&] {
         return vbox({ hbox(text("Selected: "), text((MenuChoice[selected]))),
 
-        TitleButtonsCOM->Render(),})
-        
-        | borderStyled(HEAVY) | size(WIDTH, EQUAL, 40);
-
+        TitleTouchies->Render(), }) | borderStyled(HEAVY) | size(WIDTH, EQUAL, 40);
     });
 
     auto Instructions = Renderer([&] {
@@ -155,8 +182,43 @@ std::string TitleInteractives() {
     // Make new screen the size of the component
     auto InterScreen = ScreenInteractive::FitComponent();
 
-    // Render screen
     InterScreen.Loop(BothTogether);
 
     return "OK";
+}
+
+void delete_component()
+{
+}
+
+std::string EncodeStarter(std::string EncodeSelection) {
+
+    
+    clear();
+    
+
+    
+    
+    ContinueRender = false;
+
+    return "OK";
+}
+
+void clear() {
+
+    cin.sync();
+    COORD topLeft = { 0, 0 };
+    HANDLE console = GetStdHandle(STD_OUTPUT_HANDLE);
+    CONSOLE_SCREEN_BUFFER_INFO screen;
+    DWORD written;
+
+    GetConsoleScreenBufferInfo(console, &screen);
+    FillConsoleOutputCharacterA(
+        console, ' ', screen.dwSize.X * screen.dwSize.Y, topLeft, &written
+    );
+    FillConsoleOutputAttribute(
+        console, FOREGROUND_GREEN | FOREGROUND_RED | FOREGROUND_BLUE,
+        screen.dwSize.X * screen.dwSize.Y, topLeft, &written
+    );
+    SetConsoleCursorPosition(console, topLeft);
 }
