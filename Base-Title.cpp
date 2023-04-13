@@ -3,6 +3,7 @@
 #include <cstdlib>
 #include <conio.h>
 #include <windows.h>
+#include <vector>
 #include "ftxui/component/captured_mouse.hpp"  // for ftxui
 #include "ftxui/component/component.hpp"  // for Button, Horizontal, Renderer
 #include "ftxui/component/component_base.hpp"      // for ComponentBase
@@ -16,18 +17,36 @@
 #include <ftxui/screen/screen.hpp>
 
 std::string TitleText();
-std::string TitleButtons();
-
-std::string SelectedScrambler(int selection);
+std::string TitleInteractives();
 
 std::string SCMBLRText = "Scramble now!";
+
+const std::vector<std::string> MenuChoice{ "ADFGVX cipher", "Affine Cipher", "Alberti Cipher", "Alphabet Cipher", "Alphabetum Kaldeorum", "Arnold Cipher", "Ary Numeration", "Atbash", "Autokey Cipher",
+                                     "Bacon's Cipher", "Beaufort Cipher", "Bifid Cipher", "Book Cipher", "Thomas Brierley Grave Cipher",
+                                     "Caesar Cipher", "Chaocipher", "Copiale Cipher",
+                                     "DRYAD",
+                                     "Four - square cipher",
+                                     "Great Cipher", "Grille",
+                                     "Hill Cipher",
+                                     "M-94", "Mlecchita vikalpa",
+                                     "Nihilist Cipher", "Null Cipher",
+                                     "Pig Latin", "Pigpen Cipher", "Playfair Cipher", "Poem Code", "Polyalphabetic Cipher", "Polybius Square",
+                                     "Rail Fence Cipher", "Rasterschlüssel 44", "Reihenschieber", "Reservehandverfahren", "ROT13", "Running Key Cipher",
+                                     "Scytale", "Shackle Code" ,"Sheshach" ,"Straddling Checkerboard" ,"Substitution Cipher",
+                                     "Tabula Recta", "Tap Code", "Transposition Cipher", "Trifid Cipher", "Two - Square Cipher",
+                                     "VIC Cipher", "Vigenère Cipher",
+                                     "Wadsworth's cipher", "Wahlwort"};
+
+std::span choice{ MenuChoice.begin() , MenuChoice.size() };
+
+
 
 int main() {
 
     using namespace ftxui;
 
     TitleText();
-    TitleButtons();
+    TitleInteractives();
 
     return EXIT_SUCCESS;
 }
@@ -71,9 +90,11 @@ std::string TitleText() {
     return "OK";
 }
 
-std::string TitleButtons() {
+std::string TitleInteractives() {
 
     using namespace ftxui;
+
+    int selected = 0;
 
     Component TitleButtonsCOM = Container::Vertical({
     Button(
@@ -83,14 +104,23 @@ std::string TitleButtons() {
         });
 
     auto TitleButtonsBOX = Renderer(TitleButtonsCOM, [&] {
-        return vbox({
-            TitleButtonsCOM->Render(),
+        return hbox({
+             TitleButtonsCOM->Render(),
             }) | borderStyled(HEAVY); 
     });
 
-    auto HomeScreenButtons = ScreenInteractive::FitComponent();
+    auto ChoiceMenu = Menu(&MenuChoice, &selected);
 
-    HomeScreenButtons.Loop(TitleButtonsBOX);
+    auto ChoiceMenuRender = Renderer(ChoiceMenu, [&] {
+        return vbox({
+            ChoiceMenu->Render() | vscroll_indicator | frame |
+            size(HEIGHT, LESS_THAN, 10) | border });
+        });
+
+    auto BothTogether = Container::Horizontal({ TitleButtonsBOX , ChoiceMenuRender});
+    auto InterScreen = ScreenInteractive::FitComponent();
+
+    InterScreen.Loop(BothTogether);
 
     return "OK";
 }
