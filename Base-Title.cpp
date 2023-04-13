@@ -37,8 +37,6 @@ const std::vector<std::string> MenuChoice{ "ADFGVX cipher", "Affine Cipher", "Al
 
 std::span choice{ MenuChoice.begin() , MenuChoice.size() };
 
-
-
 int main() {
 
     using namespace ftxui;
@@ -72,7 +70,7 @@ std::string TitleText() {
             vbox({
                  text("  ______ __  __ ____ _   __ ______") | color(Color::GreenLight),
                  text(" /_  __// / / //  _// | / // ____/") | color(Color::GreenLight),
-                 text("  / /  / /_/ / / / /  |/ // / __  ") | color(Color::GreenLight),
+                 text("  / /  / /_/ / / / /  |/ // / __  (Click a blank area before clicking any buttons lol)") | color(Color::GreenLight),
                  text(" / /  / __  /_/ / / /|  // /_/ /  ") | color(Color::GreenLight),
                  text("/_/  /_/ /_//___//_/ |_/ \\____/   ") | color(Color::GreenLight),
             }),
