@@ -17,7 +17,6 @@
 
 std::string TitleText();
 std::string TitleButtons();
-std::string TitleGOcipherButton(std::string ScramblerText);
 
 std::string SelectedScrambler(int selection);
 
