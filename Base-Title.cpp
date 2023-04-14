@@ -22,13 +22,9 @@ using namespace std;
 
 bool ContinueRender = true;
 
-std::string TitleText();
-std::string TitleInteractives();
+std::string Title();
 void clear();
 
-
-
-void delete_component(ftxui::Component* component);
 
 std::string EncodeStarter(std::string EncodeSelection);
 
@@ -46,7 +42,7 @@ const std::vector<std::string> MenuChoice{ "ADFGVX cipher", "Affine Cipher", "Al
                                            "Scytale", "Shackle Code" ,"Sheshach" ,"Straddling Checkerboard" ,"Substitution Cipher",
                                            "Tabula Recta", "Tap Code", "Transposition Cipher", "Trifid Cipher", "Two - Square Cipher",
                                            "VIC Cipher", "Vigenere Cipher",
-                                           "Wadsworth's cipher", "Wahlwort"};
+                                           "Wadsworth's cipher", "Wahlwort" };
 
 std::span choice{ MenuChoice.begin() , MenuChoice.size() };
 
@@ -57,20 +53,24 @@ int main() {
 
     using namespace ftxui;
 
-    TitleText();
-    TitleInteractives();
+    Title();
 
 
     return EXIT_SUCCESS;
 }
 
-std::string TitleText() {
+std::string Title() {
 
     using namespace ftxui;
 
-    Element HomeScreenTitle =
-        vbox({
-            vbox({
+    auto InterScreen = ScreenInteractive::TerminalOutput();
+
+    int selected = 0;
+
+    auto Title = Renderer([&] {
+        return vbox({
+
+               vbox({
                  text("    ______ __     ______ _____  __  __ _____  _  _____") | color(Color::GreenLight),
                  text("   / ____// /    / ____// ___/ / / / //__  / ( )/ ___/") | color(Color::GreenLight),
                  text("  / __/  / /    / __/   \\__ \\ / /_/ /   / /  |/ \\__ \\ ") | color(Color::GreenLight),
@@ -90,26 +90,8 @@ std::string TitleText() {
                  text("  / /  / /_/ / / / /  |/ // / __  (Click a blank area before clicking any buttons lol)") | color(Color::GreenLight),
                  text(" / /  / __  /_/ / / /|  // /_/ /  ") | color(Color::GreenLight),
                  text("/_/  /_/ /_//___//_/ |_/ \\____/   ") | color(Color::GreenLight),
-            }),
-
-            });
-
-    Screen TitleScreen = Screen::Create(Dimension::Fixed(88), Dimension::Fixed(16));
-
-    ftxui::Render(TitleScreen, HomeScreenTitle);
-    TitleScreen.Print();
-    // std::cout << TitleScreen.ResetPosition(true);
-    // USE THE ABOVE TO CLEAR A SCREEN PLEASE
-    return "OK";
-}
-
-std::string TitleInteractives() {
-
-    using namespace ftxui;
-
-    int selected = 0;
-
-    ftxui::Component* Interface;
+            }) });
+        });
 
     // Make the menu
     auto ChoiceMenu = Menu(&MenuChoice, &selected);
@@ -118,56 +100,65 @@ std::string TitleInteractives() {
     auto ChoiceMenuRender = Renderer(ChoiceMenu, [&] {
         return vbox({
             ChoiceMenu->Render()
-            
-            | vscroll_indicator | frame | size(HEIGHT, LESS_THAN, 10) | borderStyled(HEAVY) });
-        });
 
-    
+            | vscroll_indicator | frame | size(HEIGHT, LESS_THAN, 10) | borderStyled(HEAVY) });
+        }) | Maybe(&ContinueRender);
 
 
     // Make the buttons
-    Component TitleTouchies = Container::Vertical({Button(
+    Component TitleTouchies = Container::Vertical({ Button(
         "Exit Program?", [&] {
             exit(0);
-            
-            
 
 
-        
-        
+
+
+
+
         },
-            
+
             ButtonOption::Animated(Color::Red)),
     Button(
         "Scramble now!", [&] {
+
+            std::string Test;
+
+           ContinueRender = false;
+            
+           InterScreen.ExitLoopClosure();
+           InterScreen.Clear();
+           InterScreen.Exit();
+           
+           std::cout << InterScreen.ResetPosition(true);
             
             
-            ftxui::Component* Interface = &TitleTouchies;
+
+            system("cls");
+
             EncodeStarter(MenuChoice[selected]);
 
 
-            // void delete_component (Interface);
-        
-        },
-        
-            ButtonOption::Animated(Color::GreenLight)),
-    Button(
-        "Decode", [&] { exit(0); return;}, ButtonOption::Animated(Color::Blue3)),
-        });
 
-    if (ContinueRender = false) {
-        return "OK";
-    }
-    else;
-    
-    
+            std::cout << "HAS THIS WORKED???" << endl;
+            getline(cin, Test);
+            std::cout << "WOW";
+
+        },
+
+            ButtonOption::Animated(Color::GreenLight)),
+     Button(
+        "Decode", [&] { exit(0); return; },
+         
+            ButtonOption::Animated(Color::Blue3)),
+        }) | Maybe(&ContinueRender);
+
 
     // Put the stuff into the box(?) and send render 
     auto TitleButtonsBOX = Renderer(TitleTouchies, [&] {
         return vbox({ hbox(text("Selected: "), text((MenuChoice[selected]))),
 
         TitleTouchies->Render(), }) | borderStyled(HEAVY) | size(WIDTH, EQUAL, 40);
-    });
+        });
 
     auto Instructions = Renderer([&] {
         return vbox({
@@ -195,34 +186,34 @@ std::string TitleInteractives() {
                     text("Put it into the Key.txt file") | color(Color::Red),
                }),
 
-            }) | borderDouble;
+            }) | borderDouble ;
         });
 
-    // Put all together into a component
-    auto BothTogether = Container::Horizontal({ TitleButtonsBOX , ChoiceMenuRender, Instructions});
-    // Make new screen the size of the component
-    auto InterScreen = ScreenInteractive::FitComponent();
+    
 
-    InterScreen.Loop(BothTogether);
+    // Put all together into a component
+    
+
+    auto BothTogether = Container::Horizontal({ TitleButtonsBOX , ChoiceMenuRender, Instructions }) | Maybe(&ContinueRender);
+
+    auto FinalTitle = Container::Vertical({ BothTogether, Title }) | Maybe(&ContinueRender);
+    // Make new screen the size of the component
+
+   
+
+    InterScreen.Loop(FinalTitle);
+
+    
 
     return "OK";
 }
 
-void delete_component(ftxui::Component* component)
-{
-
-
-}
-
 std::string EncodeStarter(std::string EncodeSelection) {
 
-    
-    clear();
-    
 
     
-    
-    ContinueRender = false;
+
+
 
     return "OK";
 }
