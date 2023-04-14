@@ -28,7 +28,7 @@ void clear();
 
 
 
-void delete_component(ftxui::Component& component);
+void delete_component(ftxui::Component* component);
 
 std::string EncodeStarter(std::string EncodeSelection);
 
@@ -109,6 +109,8 @@ std::string TitleInteractives() {
 
     int selected = 0;
 
+    ftxui::Component* Interface;
+
     // Make the menu
     auto ChoiceMenu = Menu(&MenuChoice, &selected);
 
@@ -124,12 +126,31 @@ std::string TitleInteractives() {
 
 
     // Make the buttons
-    Component TitleTouchies = Container::Vertical({
+    Component TitleTouchies = Container::Vertical({Button(
+        "Exit Program?", [&] {
+            exit(0);
+            
+            
+
+
+        
+        
+        },
+            
+            ButtonOption::Animated(Color::Red)),
     Button(
-        "Exit Program?", [&] { exit(0); }, ButtonOption::Animated(Color::Red)),
-    Button(
-        "Scramble now!", [&] {EncodeStarter(MenuChoice[selected]);
-    return; }, ButtonOption::Animated(Color::GreenLight)),
+        "Scramble now!", [&] {
+            
+            
+            ftxui::Component* Interface = &TitleTouchies;
+            EncodeStarter(MenuChoice[selected]);
+
+
+            // void delete_component (Interface);
+        
+        },
+        
+            ButtonOption::Animated(Color::GreenLight)),
     Button(
         "Decode", [&] { exit(0); return;}, ButtonOption::Animated(Color::Blue3)),
         });
@@ -187,8 +208,10 @@ std::string TitleInteractives() {
     return "OK";
 }
 
-void delete_component()
+void delete_component(ftxui::Component* component)
 {
+
+
 }
 
 std::string EncodeStarter(std::string EncodeSelection) {
