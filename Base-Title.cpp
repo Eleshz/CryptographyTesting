@@ -6,6 +6,7 @@
 #include <vector>
 #include <map>
 #include <fstream>
+#include <csignal>
 
 #include "ftxui/component/captured_mouse.hpp"  // for ftxui
 #include "ftxui/component/component.hpp"  // for Button, Horizontal, Renderer
@@ -42,7 +43,7 @@ const std::vector<std::string> MenuChoice{ "ADFGVX cipher", "Affine Cipher", "Al
                                            "Scytale", "Shackle Code" ,"Sheshach" ,"Straddling Checkerboard" ,"Substitution Cipher",
                                            "Tabula Recta", "Tap Code", "Transposition Cipher", "Trifid Cipher", "Two - Square Cipher",
                                            "VIC Cipher", "Vigenere Cipher",
-                                           "Wadsworth's cipher", "Wahlwort" };
+                                           "Wadsworth's cipher", "Wahlwort" }; // List of all the ciphers that can be used, used for the menu component.
 
 std::span choice{ MenuChoice.begin() , MenuChoice.size() };
 
@@ -121,29 +122,29 @@ std::string Title() {
     Button(
         "Scramble now!", [&] {
 
-            std::string Test;
+         std::string Test;
 
-           ContinueRender = false;
+
+         ContinueRender = false;
             
-           InterScreen.ExitLoopClosure();
-           InterScreen.Clear();
-           InterScreen.Exit();
+         raise(SIGINT);
+
+
            
-           std::cout << InterScreen.ResetPosition(true);
-            
-            
 
-            system("cls");
+         system("cls");
 
-            EncodeStarter(MenuChoice[selected]);
+
+         EncodeStarter(MenuChoice[selected]);
 
 
 
-            std::cout << "HAS THIS WORKED???" << endl;
-            getline(cin, Test);
-            std::cout << "WOW";
+         std::cout << "HAS THIS WORKED???" << endl;
+         std::cin >> Test;
+         std::cout << Test;
 
         },
+
 
             ButtonOption::Animated(Color::GreenLight)),
      Button(
@@ -194,7 +195,7 @@ std::string Title() {
     // Put all together into a component
     
 
-    auto BothTogether = Container::Horizontal({ TitleButtonsBOX , ChoiceMenuRender, Instructions }) | Maybe(&ContinueRender);
+    auto BothTogether = Container::Horizontal({ TitleButtonsBOX , ChoiceMenuRender, Instructions }) | Maybe(&ContinueRender); // Puts everything together into one component that can be rendered
 
     auto FinalTitle = Container::Vertical({ BothTogether, Title }) | Maybe(&ContinueRender);
     // Make new screen the size of the component
@@ -218,7 +219,7 @@ std::string EncodeStarter(std::string EncodeSelection) {
     return "OK";
 }
 
-void clear() {
+void clear() { // Clear the screen
 
     cin.sync();
     COORD topLeft = { 0, 0 };
