@@ -7,6 +7,7 @@
 #include <map>
 #include <fstream>
 #include <csignal>
+#include <filesystem>
 
 #include "ftxui/component/captured_mouse.hpp"  // for ftxui
 #include "ftxui/component/component.hpp"  // for Button, Horizontal, Renderer
@@ -54,6 +55,7 @@ int main() {
 
     using namespace ftxui;
 
+    clear();
     Title();
 
 
@@ -208,8 +210,8 @@ std::string EncodeStarter(std::string EncodeSelection) {
 
     // Probably cause you're an idiot
 
-    std::cout << EncodeSelection << "\n";
-    std::cout << "Is this your selected? " << "y/n\n";
+    std::cout << EncodeSelection << "\n\n";
+    std::cout << "Is this your selected? " << "(y/n)\n";
 
     getline(cin, Response);
 
@@ -218,6 +220,12 @@ std::string EncodeStarter(std::string EncodeSelection) {
     }
     else;
     
+    std::cout << std::endl;
+    //USE THIS FOR WAITING A CERTAIN AMOUNT OF TIME
+    std::this_thread::sleep_for(std::chrono::milliseconds(500));
+
+    std::cout << "Perfect...\n\n";
+    std::this_thread::sleep_for(std::chrono::milliseconds(500));
         
         
     
