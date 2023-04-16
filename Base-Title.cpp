@@ -107,43 +107,34 @@ std::string Title() {
 
 
     // Make the buttons
-    Component TitleTouchies = Container::Vertical({ Button(
+    Component TitleTouchies = Container::Vertical({
+    
+    Button( // This button is for exiting the program
         "Exit Program?", [&] {
+
+
             exit(0);
 
 
-
+        
 
 
 
         },
 
             ButtonOption::Animated(Color::Red)),
-    Button(
-        "Scramble now!", [&] {
-
-         std::string Test;
-
-
-         ContinueRender = false;
-            
-         raise(SIGINT);
-
-
-           
-
+    Button( // This button is for scrambling the given text
+        "Scramble now!", InterScreen.WithRestoredIO([&] {
+         
          system("cls");
-
 
          EncodeStarter(MenuChoice[selected]);
 
+        
 
+        
 
-         std::cout << "HAS THIS WORKED???" << endl;
-         std::cin >> Test;
-         std::cout << Test;
-
-        },
+        }),
 
 
             ButtonOption::Animated(Color::GreenLight)),
@@ -178,13 +169,13 @@ std::string Title() {
                separator(),
                vbox({
                     text("You will be provided with a key"),
-                    text("At the bottom of the text") | color(Color::BlueViolet),
+                    text("Inside Key.txt") | color(Color::BlueViolet),
                }),
 
                separator(),
                vbox({
                     text("Use the key to decode the text"),
-                    text("Put it into the Key.txt file") | color(Color::Red),
+                    text("Either keep or put a new key into Key.txt") | color(Color::Red),
                }),
 
             }) | borderDouble ;
@@ -211,11 +202,26 @@ std::string Title() {
 
 std::string EncodeStarter(std::string EncodeSelection) {
 
+    std::string Response;
 
+    std::string Yes = "y"; //Lol why do I have to do this
+
+    // Probably cause you're an idiot
+
+    std::cout << EncodeSelection << "\n";
+    std::cout << "Is this your selected? " << "y/n\n";
+
+    getline(cin, Response);
+
+    if (!(Response == Yes)) {
+        return "IDK TEST FAIL LOL";
+    }
+    else;
     
-
-
-
+        
+        
+    
+    system("pause");
     return "OK";
 }
 
