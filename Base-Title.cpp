@@ -26,6 +26,7 @@ bool ContinueRender = true;
 
 std::string Title();
 void clear();
+bool FileExist(const std::string& name);
 
 
 std::string EncodeStarter(std::string EncodeSelection);
@@ -206,16 +207,14 @@ std::string EncodeStarter(std::string EncodeSelection) {
 
     std::string Response;
 
-    std::string Yes = "y"; //Lol why do I have to do this
-
-    // Probably cause you're an idiot
+    std::string Yes = "y"; //Lol why do I have to do this // Probably cause you're an idiot
 
     std::cout << EncodeSelection << "\n\n";
     std::cout << "Is this your selected? " << "(y/n)\n";
 
     getline(cin, Response);
 
-    if (!(Response == Yes)) {
+    if (!(Response == "y")) {
         return "IDK TEST FAIL LOL";
     }
     else;
@@ -226,8 +225,42 @@ std::string EncodeStarter(std::string EncodeSelection) {
 
     std::cout << "Perfect...\n\n";
     std::this_thread::sleep_for(std::chrono::milliseconds(500));
-        
-        
+      
+
+    try {
+
+        std::string FileName;
+
+        if (FileExist("Input.txt")) {
+
+            std::cout << "It worked!\n";
+            std::cout << "========================\n\n";
+
+            if (FileExist("Output.txt")) {
+
+                std::cout << "It worked!\n";
+                std::cout << "========================\n\n";
+
+                if (FileExist("Key.txt")) {
+
+                    std::cout << "It worked!\n";
+                    std::cout << "========================\n\n";
+                }
+                else {
+                    throw std::string("Key.txt");
+                }
+            }
+            else {
+                throw std::string("Output.txt");
+            }
+        }
+        else {
+            throw std::string("Input.txt");
+        }
+    }
+    catch (string FileName) {
+        std::cout << "\n\n\nLOL YOU FOOL, MAKE A FILE CALLED '" << FileName << "' AND PUT IT WHERE THE EXE IS\n\n";
+    }
     
     system("pause");
     return "OK";
@@ -250,4 +283,16 @@ void clear() { // Clear the screen
         screen.dwSize.X * screen.dwSize.Y, topLeft, &written
     );
     SetConsoleCursorPosition(console, topLeft);
+}
+
+bool FileExist(const std::string& name)
+{
+    
+    bool IsExist;                            // declare the result
+    {                                       // start a scope block
+        ifstream file(name);                // create the ifstream object
+        IsExist = file.is_open();            // store the result
+    }                                       // end the scope block, file is destroyed and closed
+    return IsExist;                          // return the result
+   
 }
