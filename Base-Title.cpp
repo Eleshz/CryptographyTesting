@@ -26,7 +26,7 @@ bool ContinueRender = true;
 
 std::string Title();
 void clear();
-bool FileExist(const std::string& name);
+std::string FileExist(std::string GivenName);
 
 
 std::string EncodeStarter(std::string EncodeSelection);
@@ -205,16 +205,16 @@ std::string Title() {
 
 std::string EncodeStarter(std::string EncodeSelection) {
 
-    std::string Response;
+    std::string ResponseChecker;
 
     std::string Yes = "y"; //Lol why do I have to do this // Probably cause you're an idiot
 
     std::cout << EncodeSelection << "\n\n";
     std::cout << "Is this your selected? " << "(y/n)\n";
 
-    getline(cin, Response);
+    getline(cin, ResponseChecker);
 
-    if (!(Response == "y")) {
+    if (!(ResponseChecker == "y")) {
         return "IDK TEST FAIL LOL";
     }
     else;
@@ -229,37 +229,39 @@ std::string EncodeStarter(std::string EncodeSelection) {
 
     try {
 
+        std::string InputDirectory;
+        std::string OutputDirectory;
+        std::string KeyDirectory;
+
         std::string FileName;
 
-        if (FileExist("Input.txt")) {
 
-            std::cout << "It worked!\n";
-            std::cout << "========================\n\n";
+        FileName = "Input.txt";
+        InputDirectory = FileExist(FileName);
+        std::cout << "I have found Input.txt here -> '" << InputDirectory << "'\n";
+        std::cout << "-----------------------------------------\n";
 
-            if (FileExist("Output.txt")) {
 
-                std::cout << "It worked!\n";
-                std::cout << "========================\n\n";
 
-                if (FileExist("Key.txt")) {
 
-                    std::cout << "It worked!\n";
-                    std::cout << "========================\n\n";
-                }
-                else {
-                    throw std::string("Key.txt");
-                }
-            }
-            else {
-                throw std::string("Output.txt");
-            }
-        }
-        else {
-            throw std::string("Input.txt");
-        }
+        FileName = "Output.txt";
+        OutputDirectory = FileExist(FileName);
+        std::cout << "I have found Output.txt here -> '" << OutputDirectory << "'\n";
+        std::cout << "-----------------------------------------\n";
+
+
+
+
+        FileName = "Key.txt";
+        KeyDirectory = FileExist(FileName);
+        std::cout << "I have found Key.txt here -> '" << KeyDirectory << "'\n";
+        std::cout << "-----------------------------------------\n";
+
+
     }
-    catch (string FileName) {
-        std::cout << "\n\n\nLOL YOU FOOL, MAKE A FILE CALLED '" << FileName << "' AND PUT IT WHERE THE EXE IS\n\n";
+    catch (const std::exception& e) {
+        // handle the exception
+        std::cerr << "Error: " << e.what() << "\n";
     }
     
     system("pause");
@@ -285,14 +287,57 @@ void clear() { // Clear the screen
     SetConsoleCursorPosition(console, topLeft);
 }
 
-bool FileExist(const std::string& name)
+std::string FileExist(std::string GivenName)
 {
-    
-    bool IsExist;                            // declare the result
-    {                                       // start a scope block
-        ifstream file(name);                // create the ifstream object
-        IsExist = file.is_open();            // store the result
-    }                                       // end the scope block, file is destroyed and closed
-    return IsExist;                          // return the result
-   
+    namespace fs = std::filesystem;
+
+    bool HasBeenFound = false;
+
+    std::vector<std::string> FolderList{};
+    std::vector<std::string> FileList;
+
+    FolderList.push_back("./");
+
+    while (true) {
+
+        for (auto& TestFiles : FolderList) {
+            for (const auto& file : fs::directory_iterator(TestFiles)) {
+
+                int i = 1;
+
+                if (fs::is_directory(file)) {
+                    std::cout << file << " <--- Folder \n" << " " << i;
+                    FolderList.push_back(file.path().string());
+                }
+                else {
+                    std::cout << file << " <--- File \n" << " " << i;
+                    FileList.push_back(file.path().string());
+                }
+
+                ++i;
+            }
+
+            for (const auto& File : FileList) {
+                if (File == GivenName) {
+                    return File + "/" + GivenName;
+                }
+            }
+
+            std::cout << "\n" << FolderList.size() << "\n\n";
+            std::cout << "\n" << FileList.size() << "\n\n";
+
+            FolderList.erase(FolderList.begin());
+
+            for (const auto& File : FolderList) {
+                std::cout << File << "\n";
+            }
+
+            FileList.clear();
+            FileList.shrink_to_fit();
+
+            std::cout << "\n" << FolderList.size() << "\n\n";
+            std::cout << "\n" << FileList.size() << "\n\n";
+
+        }
+    }
 }
