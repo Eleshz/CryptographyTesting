@@ -55,10 +55,12 @@ std::span choice{ MenuChoice.begin() , MenuChoice.size() };
 
 int main() {
 
+    QuickSearch("C:/", "Input.txt", 50);
+
     using namespace ftxui;
 
-    clear();
-    Title();
+    //clear();
+    //Title();
 
 
     return EXIT_SUCCESS;
