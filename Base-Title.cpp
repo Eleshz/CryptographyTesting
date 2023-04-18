@@ -300,26 +300,38 @@ std::string FileExist(std::string GivenName)
 
     while (true) {
 
-        for (auto& TestFiles : FolderList) {
-            for (const auto& file : fs::directory_iterator(TestFiles)) {
+        std::cout << "I will be checking the " << FolderList[0] << " folder now.\n\n\n\n";
 
-                int i = 1;
+        
+            for (const auto& file : fs::directory_iterator(fs::path(FolderList[0]))) {
 
                 if (fs::is_directory(file)) {
-                    std::cout << file << " <--- Folder \n" << " " << i;
-                    FolderList.push_back(file.path().string());
+
+                    std::string Temp;
+
+                    std::cout << file << " <--- Folder \n";
+
+                    Temp = (file.path().string());
+
+                    Temp = Temp.substr(Temp.rfind("\\") + 1);
+
+                    FolderList.push_back(Temp);
                 }
                 else {
-                    std::cout << file << " <--- File \n" << " " << i;
+                    std::cout << file << " <--- File \n";
                     FileList.push_back(file.path().string());
                 }
-
-                ++i;
             }
+        
+
+            std::cout << "\n\n";
 
             for (const auto& File : FileList) {
                 if (File == GivenName) {
                     return File + "/" + GivenName;
+                }
+                else {
+                    std::cout << File << " Was not equal to: " << GivenName << "\n";
                 }
             }
 
@@ -332,12 +344,15 @@ std::string FileExist(std::string GivenName)
                 std::cout << File << "\n";
             }
 
+            
+
             FileList.clear();
             FileList.shrink_to_fit();
 
-            std::cout << "\n" << FolderList.size() << "\n\n";
-            std::cout << "\n" << FileList.size() << "\n\n";
-
-        }
+            if (FolderList.empty()) {
+                std::cout << "\n\nNo more folders!! Couldn't find!!!\n";
+                return "Fail";
+            }
+        
     }
 }
