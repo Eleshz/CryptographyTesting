@@ -8,6 +8,7 @@
 #include <fstream>
 #include <csignal>
 #include <filesystem>
+#include "EleshzAlgorithms.h"
 
 #include "ftxui/component/captured_mouse.hpp"  // for ftxui
 #include "ftxui/component/component.hpp"  // for Button, Horizontal, Renderer
