@@ -11,14 +11,12 @@
 #include <deque>
 #include <mutex>
 #include <iostream>
+#include <condition_variable>
 
 
 std::mutex NoYouDont;
 
-
 bool ContinueSearch = true;
-
-int ThreadsStarted = 0;
 
 std::deque<std::filesystem::path> FolderList;
 
@@ -28,14 +26,24 @@ std::vector<int> ThreadSelection;
 
 std::deque<std::string> FolderToPassToThread;
 
+int NumThreads;
 
-std::string ScannerItem(std::string GivenFolder, int WhatThread);
+std::condition_variable cv;
+std::mutex cv_m;
+
+
+
+std::string ScannerItem(std::string GivenFolder, int WhatThread, int NumberOfThreads);
 
 std::string QuickSearch(std::string StartSearchLocation, std::string FileToBeFound, int NumberOfThreads) {
 
+	
+
 	ThreadSelection.resize(NumberOfThreads);
 
-	
+	std::condition_variable WaitForMakingAllThreads;
+
+	FileList.push_back("./");
 
 	std::vector<std::thread> ThisThread;
 	ThisThread.resize(NumberOfThreads);
@@ -45,25 +53,28 @@ std::string QuickSearch(std::string StartSearchLocation, std::string FileToBeFou
 
 	for (int i = 0; i < ThisThread.size(); ++i) {
 
-		std::thread th(ScannerItem, "", i);
+		std::thread th(ScannerItem, "", i, NumberOfThreads);
 
 		ThisThread[i] = std::move(th);
 	}
 	
+	NumThreads = NumberOfThreads;
+
+	std::cout << "Made all threads!\n\n";
+
+	cv.notify_all();
+	
 	for (auto& i : ThisThread) {
 		i.join();
 	}
-	
 	std::cout << "\n\nAll done!";
-	
-
 	return "NULL";
 }
 
-std::string ScannerItem(std::string GivenFolder, int WhatThread) {
+std::string ScannerItem(std::string GivenFolder, int WhatThread, int NumberOfThreads) {
 	
-	thread_local std::thread current_thread;
-	
+	std::unique_lock<std::mutex> lk(cv_m);
+	cv.wait(lk, [&] {return NumThreads == NumberOfThreads; });
 
 	NoYouDont.lock();
 
