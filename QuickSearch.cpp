@@ -37,13 +37,13 @@ std::string ScannerItem(std::string GivenFolder, int WhatThread, int NumberOfThr
 
 std::string QuickSearch(std::string StartSearchLocation, std::string FileToBeFound, int NumberOfThreads) {
 
-	
+	FolderList.resize(10);
 
 	ThreadSelection.resize(NumberOfThreads);
 
 	std::condition_variable WaitForMakingAllThreads;
 
-	FileList.push_back("./");
+	
 
 	std::vector<std::thread> ThisThread;
 	ThisThread.resize(NumberOfThreads);
@@ -62,6 +62,8 @@ std::string QuickSearch(std::string StartSearchLocation, std::string FileToBeFou
 
 	std::cout << "Made all threads!\n\n";
 
+	FolderList.push_back("./");
+
 	cv.notify_all();
 	
 	for (auto& i : ThisThread) {
@@ -76,11 +78,7 @@ std::string ScannerItem(std::string GivenFolder, int WhatThread, int NumberOfThr
 	std::unique_lock<std::mutex> lk(cv_m);
 	cv.wait(lk, [&] {return NumThreads == NumberOfThreads; });
 
-	NoYouDont.lock();
-
-	std::cout << "Thread started: " << WhatThread+1 << "\n";
-
-	NoYouDont.unlock();
+	std::cout << WhatThread << " waited succeed...\n";
 
 	return "blah";
 }
