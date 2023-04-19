@@ -78,7 +78,7 @@ std::string ScannerItem(std::string GivenFolder, int WhatThread, int NumberOfThr
 	std::unique_lock<std::mutex> lk(cv_m);
 	cv.wait(lk, [&] {return NumThreads == NumberOfThreads; });
 
-	std::cout << WhatThread << " waited succeed...\n";
+	std::cout << WhatThread+1 << " waited succeed...\n";
 
 	return "blah";
 }
