@@ -55,7 +55,7 @@ std::span choice{ MenuChoice.begin() , MenuChoice.size() };
 
 int main() {
 
-    QuickSearch("C:/", "Input.txt", 1000);
+    QuickSearch("./", "Input.txt", 10);
 
     using namespace ftxui;
 
@@ -114,7 +114,7 @@ std::string Title() {
 
     // Make the buttons
     Component TitleTouchies = Container::Vertical({
-    
+
     Button( // This button is for exiting the program
         "Exit Program?", [&] {
 
@@ -122,7 +122,7 @@ std::string Title() {
             exit(0);
 
 
-        
+
 
 
 
@@ -131,14 +131,14 @@ std::string Title() {
             ButtonOption::Animated(Color::Red)),
     Button( // This button is for scrambling the given text
         "Scramble now!", InterScreen.WithRestoredIO([&] {
-         
+
          system("cls");
 
          EncodeStarter(MenuChoice[selected]);
 
-        
 
-        
+
+
 
         }),
 
@@ -146,12 +146,12 @@ std::string Title() {
             ButtonOption::Animated(Color::GreenLight)),
      Button(
         "Decode", [&] { exit(0); return; },
-         
+
             ButtonOption::Animated(Color::Blue3)),
         }) | Maybe(&ContinueRender);
 
 
-    // Put the stuff into the box(?) and send render 
+    // Put the stuff into the box(?) and send render
     auto TitleButtonsBOX = Renderer(TitleTouchies, [&] {
         return vbox({ hbox(text("Selected: "), text((MenuChoice[selected]))),
 
@@ -187,21 +187,21 @@ std::string Title() {
             }) | borderDouble ;
         });
 
-    
+
 
     // Put all together into a component
-    
+
 
     auto BothTogether = Container::Horizontal({ TitleButtonsBOX , ChoiceMenuRender, Instructions }) | Maybe(&ContinueRender); // Puts everything together into one component that can be rendered
 
     auto FinalTitle = Container::Vertical({ BothTogether, Title }) | Maybe(&ContinueRender);
     // Make new screen the size of the component
 
-   
+
 
     InterScreen.Loop(FinalTitle);
 
-    
+
 
     return "OK";
 }
@@ -221,14 +221,14 @@ std::string EncodeStarter(std::string EncodeSelection) {
         return "IDK TEST FAIL LOL";
     }
     else;
-    
+
     std::cout << std::endl;
     //USE THIS FOR WAITING A CERTAIN AMOUNT OF TIME
     std::this_thread::sleep_for(std::chrono::milliseconds(500));
 
     std::cout << "Perfect...\n\n";
     std::this_thread::sleep_for(std::chrono::milliseconds(500));
-      
+
 
     try {
 
@@ -266,7 +266,7 @@ std::string EncodeStarter(std::string EncodeSelection) {
         // handle the exception
         std::cerr << "Error: " << e.what() << "\n";
     }
-    
+
     system("pause");
     return "OK";
 }
@@ -305,7 +305,7 @@ std::string FileExist(std::string GivenName)
 
         std::cout << "I will be checking the " << FolderList[0] << " folder now.\n\n\n\n";
 
-        
+
             for (const auto& file : fs::directory_iterator(fs::path(FolderList[0]))) {
 
                 if (fs::is_directory(file)) {
@@ -325,7 +325,7 @@ std::string FileExist(std::string GivenName)
                     FileList.push_back(file.path().string());
                 }
             }
-        
+
 
             std::cout << "\n\n";
 
@@ -347,7 +347,7 @@ std::string FileExist(std::string GivenName)
                 std::cout << File << "\n";
             }
 
-            
+
 
             FileList.clear();
             FileList.shrink_to_fit();
@@ -356,6 +356,6 @@ std::string FileExist(std::string GivenName)
                 std::cout << "\n\nNo more folders!! Couldn't find!!!\n";
                 return "Fail";
             }
-        
+
     }
 }

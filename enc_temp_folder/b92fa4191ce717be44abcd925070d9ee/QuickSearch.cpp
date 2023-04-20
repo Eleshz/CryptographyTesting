@@ -84,17 +84,17 @@ std::string QuickSearch(std::string StartSearchLocation, std::string FileToBeFou
 
 	std::cout << ThisThread.size() << "\n\n";
 
-	for (int i = 0; i < ThisThread.size(); ++i) {
+	//for (int i = 0; i < ThisThread.size(); ++i) {
 
-		std::cout << "HI\n";
+	//	std::cout << "HI\n";
 
-		if (ThisThread[i].joinable()) { ThisThread[i].join();}
-		else
-		{
-			std::cout << "Thread " << i << "skipped";
-			continue;
-		}
-	}
+	//	if (ThisThread[i].joinable()) { ThisThread[i].join();}
+	//	else
+	//	{
+	//		std::cout << "Thread " << i << "skipped";
+	//		continue;
+	//	}
+	//}
 
 	std::cout << "\n\nAll done! Found file at: ";
 	return "GOOD";
