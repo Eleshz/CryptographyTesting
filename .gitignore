@@ -47,3 +47,10 @@
 /FilesForTesting/base-title.obj.enc
 /FilesForTesting/QuickSearch.obj
 /FilesForTesting/quicksearch.new.obj.enc
+/FilesForTesting/QuickSearch.nativecodeanalysis.xml
+/FilesForTesting/QuickSearch.nativecodeanalysis.sarif
+/FilesForTesting/CodeAnalysisResultManifest.txt
+/FilesForTesting/Base-Title.nativecodeanalysis.xml
+/FilesForTesting/Base-Title.nativecodeanalysis.sarif
+/QuickSearch.obj
+/enc_temp_folder/b92fa4191ce717be44abcd925070d9ee/QuickSearch.cpp
