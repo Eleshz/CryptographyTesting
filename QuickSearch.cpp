@@ -18,8 +18,10 @@
 namespace fs = std::filesystem;
 
 int Num_ThreadsStarted = 0;
+int Num_ThreadsENDed = 0;
 
 bool AllThreadsStartedBool = false;
+bool AllThreadsENDedBool = false;
 
 std::string FinalFileLocation = "0";
 
@@ -28,8 +30,10 @@ std::mutex intInput_pause;
 std::mutex FolderInput_pause;
 std::mutex FileInput_pause;
 std::mutex AllScannersHaveStarted;
+std::mutex AllScannersHaveENDed;
 
 std::condition_variable WaitForThreads;
+std::condition_variable WaitForThreadsEND;
 
 std::deque<std::filesystem::path> FolderList;
 std::deque<std::filesystem::path> FolderDistribution;
@@ -45,7 +49,10 @@ std::string QuickSearch(std::string StartSearchLocation, std::string FileToBeFou
 	FolderDistribution.resize(NumberOfThreads);
 	Thread_Available.resize(NumberOfThreads);
 	ThisThread.resize(NumberOfThreads);
+
 	Num_ThreadsStarted = NumberOfThreads;
+	Num_ThreadsENDed = NumberOfThreads + 1;
+
 
 	for (int i = 0; i < FolderDistribution.size(); i++) {
 		FolderDistribution[i] = "0";
@@ -69,7 +76,11 @@ std::string QuickSearch(std::string StartSearchLocation, std::string FileToBeFou
 
 	std::cout << "Started FolderDistributor\n\n";
 
-	int ThisThreadSize = ThisThread.size();
+	std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+
+	std::unique_lock<std::mutex> ThreadLockEND(AllScannersHaveENDed);
+	while (!AllThreadsENDedBool) WaitForThreadsEND.wait(ThreadLock);
+
 	for (int i = 0; i < ThisThread.size(); ++i){
 		ThisThread[i].join();
 	} Dis_Thread.join();
@@ -90,10 +101,11 @@ std::string ScannerItem(int WhatThread) {
 
 	while (FinalFileLocation == "0") {
 
-		if (FolderDistribution[WhatThread] == "0") {
+			fs::recursive_directory_iterator iter(FolderDistribution[WhatThread]);
 
-			for (const auto& file : fs::directory_iterator(fs::path(FolderDistribution[WhatThread]))) {
+			Thread_Available[WhatThread] = 0;
 
+			for (const auto& file : iter) {
 				if (fs::is_directory(file)) {
 					std::cout << file << " <--- Folder \n";
 					FolderList.push_back(file);
@@ -105,15 +117,14 @@ std::string ScannerItem(int WhatThread) {
 
 			}
 
-
-
-		} else
-		{
-			continue;
-		}
-
 	}
 
+	intInput_pause.lock(); --Num_ThreadsENDed; intInput_pause.unlock();
+
+	if (Num_ThreadsENDed == 0) {
+		AllThreadsENDedBool = true;
+		WaitForThreadsEND.notify_all();
+	} else;
 
 
 	return "Ok";
@@ -132,6 +143,14 @@ int FileDistributor() {
 			}
 		}
 	}
+
+	intInput_pause.lock(); --Num_ThreadsENDed; intInput_pause.unlock();
+
+	if (Num_ThreadsENDed == 0) {
+		AllThreadsENDedBool = true;
+		WaitForThreadsEND.notify_all();
+	} else;
+
 	return 0;
 }
 
