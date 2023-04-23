@@ -31,24 +31,27 @@ std::mutex FolderInput_pause;
 std::mutex FileInput_pause;
 std::mutex AllScannersHaveStarted;
 std::mutex AllScannersHaveENDed;
+std::mutex Thread_SP_Pause;
 
 std::condition_variable WaitForThreads;
 std::condition_variable WaitForThreadsEND;
 
 std::deque<std::filesystem::path> FolderList;
 std::deque<std::filesystem::path> FolderDistribution;
-std::vector<int> Thread_Available;
+std::vector<bool> Thread_Available;
 std::vector<std::thread> ThisThread;
 
-std::string ScannerItem(int WhatThread);
-int FileDistributor();
+std::string FileToBeFound_Thread;
+
+void ScannerItem(int WhatThread);
+void FileDistributor();
 
 std::string QuickSearch(std::string StartSearchLocation, std::string FileToBeFound, int NumberOfThreads){
 
-	FolderList.resize(NumberOfThreads);
 	FolderDistribution.resize(NumberOfThreads);
 	Thread_Available.resize(NumberOfThreads);
 	ThisThread.resize(NumberOfThreads);
+	FileToBeFound_Thread = FileToBeFound;
 
 	Num_ThreadsStarted = NumberOfThreads;
 	Num_ThreadsENDed = NumberOfThreads + 1;
@@ -76,8 +79,6 @@ std::string QuickSearch(std::string StartSearchLocation, std::string FileToBeFou
 
 	std::cout << "Started FolderDistributor\n\n";
 
-	std::this_thread::sleep_for(std::chrono::milliseconds(1000));
-
 	std::unique_lock<std::mutex> ThreadLockEND(AllScannersHaveENDed);
 	while (!AllThreadsENDedBool) WaitForThreadsEND.wait(ThreadLock);
 
@@ -85,10 +86,12 @@ std::string QuickSearch(std::string StartSearchLocation, std::string FileToBeFou
 		ThisThread[i].join();
 	} Dis_Thread.join();
 
-	return "GOOD";
+	FolderList.clear();
+
+	return FinalFileLocation;
 }
 
-std::string ScannerItem(int WhatThread) {
+void ScannerItem(int WhatThread) {
 	//Waits for every thread to start before the file distributor starts
 	intInput_pause.lock(); --Num_ThreadsStarted; intInput_pause.unlock();
 
@@ -99,58 +102,114 @@ std::string ScannerItem(int WhatThread) {
 		WaitForThreads.notify_all();
 	} else;
 
+	Thread_Available[WhatThread] = true;
+
+	Thread_SP_Pause.lock();
 	while (FinalFileLocation == "0") {
 
-			fs::recursive_directory_iterator iter(FolderDistribution[WhatThread]);
+		Thread_SP_Pause.unlock();
 
-			Thread_Available[WhatThread] = 0;
+		if (FolderDistribution[WhatThread].string() != "0")
+		{
+				Thread_Available[WhatThread] = false;
+				try {
 
-			for (const auto& file : iter) {
-				if (fs::is_directory(file)) {
-					std::cout << file << " <--- Folder \n";
-					FolderList.push_back(file);
+					fs::directory_iterator iter(FolderDistribution[WhatThread]);
+
+					for (const auto& file : iter) {
+						if (fs::is_directory(file)) {
+							intInput_pause.lock();
+							FolderList.push_back(file);
+							intInput_pause.unlock();
+						}
+						else {
+							FileList.push_back(file.path());
+						}
+
+						for (auto file : FileList) {
+							if (file.filename() == FileToBeFound_Thread) {
+								Thread_SP_Pause.lock();
+								FinalFileLocation = file.string();
+								Thread_SP_Pause.unlock();
+								goto END;
+							}
+						}
+						FileList.clear();
+					}
+					Thread_SP_Pause.lock();
+					FolderDistribution[WhatThread] = "0";
+					Thread_Available[WhatThread] = true;
+					Thread_SP_Pause.unlock();
 				}
-				else {
-					std::cout << file << " <--- File \n";
-					FileList.push_back(file.path());
+				catch (...) {
+					Thread_SP_Pause.lock();
+					std::cout << "EX,";
+					FolderDistribution[WhatThread] = "0";
+					Thread_Available[WhatThread] = true;
+					Thread_SP_Pause.unlock();
 				}
-
-			}
-
-	}
-
-	intInput_pause.lock(); --Num_ThreadsENDed; intInput_pause.unlock();
-
-	if (Num_ThreadsENDed == 0) {
-		AllThreadsENDedBool = true;
-		WaitForThreadsEND.notify_all();
-	} else;
-
-
-	return "Ok";
-}
-
-int FileDistributor() {
-	while (FinalFileLocation == "0") {
-		fs::path folder = FolderList.front();
-		if (folder.empty()) {
-			FolderList.pop_front();
+		}
+		else {
 			continue;
 		}
-		for (auto i : Thread_Available) {
-			if (Thread_Available[i] == 1) {
-				FolderDistribution[i] = folder;
-			}
-		}
 	}
 
-	intInput_pause.lock(); --Num_ThreadsENDed; intInput_pause.unlock();
+	END:
 
+	--Num_ThreadsENDed;
+
+	Thread_SP_Pause.lock();
 	if (Num_ThreadsENDed == 0) {
 		AllThreadsENDedBool = true;
 		WaitForThreadsEND.notify_all();
 	} else;
+	Thread_SP_Pause.unlock();
+}
 
-	return 0;
+void FileDistributor() {
+
+	while (FinalFileLocation == "0") {
+
+		if (FolderList.size() == 0)
+			continue;
+
+		fs::path folder = FolderList.front();
+
+		if (folder.empty()) {
+			Thread_SP_Pause.lock();
+			FolderList.pop_front();
+			Thread_SP_Pause.unlock();
+			continue;
+		}
+
+
+		if (FolderList.size() == 0)
+			continue;
+
+		for (int i = 0; i < Thread_Available.size(); ++i) {
+
+			if (FolderList.size() == 0)
+				break;
+			try
+			{
+				if (Thread_Available[i] == true) {
+					Thread_SP_Pause.lock();
+					Thread_Available[i] = false;
+					FolderDistribution[i] = folder;
+					FolderList.pop_front();
+					Thread_SP_Pause.unlock();
+				}
+			}
+			catch (...) {
+				std::cout << "\n\nMAX SIZE OF DEQUE REACHED\n\n";
+			}
+		}
+	}
+	intInput_pause.lock(); --Num_ThreadsENDed;
+	if (Num_ThreadsENDed == 0) {
+		AllThreadsENDedBool = true;
+		WaitForThreadsEND.notify_all();
+	} else;
+	intInput_pause.unlock();
 }
 

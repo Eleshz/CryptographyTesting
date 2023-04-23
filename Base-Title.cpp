@@ -55,7 +55,7 @@ std::span choice{ MenuChoice.begin() , MenuChoice.size() };
 
 int main() {
 
-    QuickSearch("./", "Input.txt", 10);
+    std::cout << "\n\n\n" << QuickSearch("./", "Input.txt", 6) << "\n\n\n";
 
     using namespace ftxui;
 
