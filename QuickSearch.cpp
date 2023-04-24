@@ -93,6 +93,7 @@ std::string QuickSearch(std::string StartSearchLocation, std::string FileToBeFou
 
 	//Output the directory
 	return FinalFileLocation;
+	std::this_thread::sleep_for(3s);
 }
 
 /// <summary>
