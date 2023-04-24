@@ -48,6 +48,13 @@ std::string FileToBeFound_Thread;
 void ScannerItem(int WhatThread);
 void FileDistributor();
 
+/// <summary>
+/// Give this the place you want to start searching, the file i.e. "Test.txt" and the number of threads, put 0 and it will assume based on your computer
+/// </summary>
+/// <param name="StartSearchLocation"></param>
+/// <param name="FileToBeFound"></param>
+/// <param name="NumberOfThreads"></param>
+/// <returns></returns>
 std::string QuickSearch(std::string StartSearchLocation, std::string FileToBeFound, int NumberOfThreads){
 
 	//Set sizes (Mostly for iteration)
@@ -88,6 +95,10 @@ std::string QuickSearch(std::string StartSearchLocation, std::string FileToBeFou
 	return FinalFileLocation;
 }
 
+/// <summary>
+/// Scans a given folder in the vector of it's thread number
+/// </summary>
+/// <param name="WhatThread"></param>
 void ScannerItem(int WhatThread) {
 
 	General_Pause.lock();
@@ -113,9 +124,11 @@ void ScannerItem(int WhatThread) {
 		AllThreadsENDedBool = true;
 		WaitForThreadsEND.notify_all();
 	}
-	else;
 }
 
+/// <summary>
+/// Distributes folders from the front of the queue to any empty threads found in the vector of threads
+/// </summary>
 void FileDistributor(){
 
 	General_Pause.lock();
@@ -141,6 +154,5 @@ void FileDistributor(){
 		AllThreadsENDedBool = true;
 		WaitForThreadsEND.notify_all();
 	}
-	else;
 }
 
