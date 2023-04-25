@@ -31,7 +31,7 @@ std::string FinalFileLocation = "Yes";
 std::mutex AllThreadsHaveStarted;
 std::mutex AllThreadsHaveENDed;
 std::mutex General_Pause;
-std::mutex (File_DIS);
+std::vector<std::mutex> File_DIS_LOCK;
 
 std::condition_variable WaitForThreads;
 std::condition_variable WaitForThreadsEND;
@@ -57,11 +57,12 @@ void FileDistributor();
 /// <returns></returns>
 std::string QuickSearch(std::string StartSearchLocation, std::string FileToBeFound, int NumberOfThreads){
 
-	//Set sizes (Mostly for iteration)
+	//Set sizes (Mostly for iteration and index)
 	Num_Threads = NumberOfThreads;
 	Thread_Available.resize(NumberOfThreads);
 	ThisThread.resize(NumberOfThreads);
 	Num_ThreadsENDed = NumberOfThreads+1;
+	File_DIS_LOCK = std::vector<std::mutex>(NumberOfThreads);
 
 	//Making condition variables and putting them into this super cool vector
 	for (int i = 0; i < NumberOfThreads; ++i) {
@@ -93,7 +94,6 @@ std::string QuickSearch(std::string StartSearchLocation, std::string FileToBeFou
 
 	//Output the directory
 	return FinalFileLocation;
-	std::this_thread::sleep_for(3s);
 }
 
 /// <summary>
@@ -117,7 +117,6 @@ void ScannerItem(int WhatThread) {
 	General_Pause.lock();
 	std::cout << "Ended thread " << WhatThread << "\n";
 	General_Pause.unlock();
-
 
 	//Shutdown check
 	--Num_ThreadsENDed;
