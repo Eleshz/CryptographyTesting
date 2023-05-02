@@ -19,9 +19,18 @@
 namespace fs = std::filesystem;
 using namespace std::literals::chrono_literals;
 
+std::mutex Pause;
 
+int MaxThreads;
 
-void ScannerItem(fs::path FileToScan);
+std::atomic<int> NumberOfLivingThreads;
+
+std::deque<fs::path> FolderList;
+
+std::string FinalPath = "0";
+std::string FileToFind = "0";
+
+void ScannerItem(std::string FileToScan);
 void FileDistributor();
 
 /// <summary>
@@ -33,15 +42,68 @@ void FileDistributor();
 /// <returns></returns>
 std::string QuickSearch(std::string StartSearchLocation, std::string FileToBeFound, int MaxAmountOfThreads){
 
+	//Don't look at this lol
+	if (MaxAmountOfThreads < 1) {MaxThreads = std::ceil((std::thread::hardware_concurrency())*0.75)+1;}
+	else {MaxThreads = MaxAmountOfThreads;}
+
+	FileToFind = FileToBeFound;
+
+	FolderList.push_front(StartSearchLocation);
+
+	FileDistributor();
+
+	return FinalPath;
 }
 
 /// <summary>
 /// Scans a given folder
 /// </summary>
 /// <param name="WhatThread"></param>
-void ScannerItem(fs::path FileToScan) {
+void ScannerItem(std::string FileToScan) {
 
 	std::deque<std::filesystem::path> FileList;
+	std::deque<std::filesystem::path> PersonalFolderList;
+
+	NumberOfLivingThreads++;
+
+	std::unique_lock<std::mutex> LocalPause(Pause);
+	LocalPause.unlock();
+
+	fs::directory_iterator iter(FileToScan);
+
+	for (const auto& file : iter) {
+		try {
+			if (fs::is_directory(file)) {
+				PersonalFolderList.push_back(file);
+			}
+			else {
+				FileList.push_back(file.path());
+			}
+
+		}
+		catch (...) {
+				std::cout << "EX,";
+		}
+	}
+
+	for (auto file : FileList) {
+		if (file.filename() == FileToFind) {
+
+			LocalPause.lock();
+			FinalPath = file.string();
+			LocalPause.unlock();
+			goto END;
+		}
+	}
+	FileList.clear();
+	LocalPause.lock();
+	std::copy(PersonalFolderList.begin(), PersonalFolderList.end(), std::back_inserter(FolderList));
+	LocalPause.unlock();
+
+	END:
+	NumberOfLivingThreads--;
+	FileList.clear();
+	return;
 
 }
 
@@ -50,5 +112,40 @@ void ScannerItem(fs::path FileToScan) {
 /// </summary>
 void FileDistributor(){
 
+	while (true) {
+
+		std::unique_lock<std::mutex> LocalPause (Pause);
+		if (FinalPath != "0")
+			break;
+		LocalPause.unlock();
+		LocalPause.lock();
+		if (FolderList.empty())
+			continue;
+		try {
+			if (FolderList.front().empty() || fs::is_empty(FolderList.front()) || fs::is_symlink(FolderList.front()) || !fs::exists(FolderList.front())) {
+				FolderList.pop_front();
+				LocalPause.unlock();
+				continue;
+			}
+		}
+		catch (...) {
+			FolderList.pop_front();
+			LocalPause.unlock();
+			continue;
+		}
+		LocalPause.unlock();
+		LocalPause.lock();
+		if (NumberOfLivingThreads == MaxThreads) {
+			LocalPause.unlock();
+			continue;
+		}
+		else {
+			std::string PathAsStringTemp = FolderList.front().string();
+			std::jthread Worker(ScannerItem, PathAsStringTemp);
+			Worker.detach();
+			FolderList.pop_front();
+		}
+	}
+	return;
 }
 

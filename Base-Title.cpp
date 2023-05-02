@@ -55,7 +55,7 @@ std::span choice{ MenuChoice.begin() , MenuChoice.size() };
 
 int main() {
 
-    std::cout << "\n\n\n" << QuickSearch("./", "Input.txt", 6) << "\n\n\n";
+    std::cout << "\n\n\n" << QuickSearch("C:/", "FabFilter Timeless 3.vst3", 0) << "\n\n\n";
 
     using namespace ftxui;
 
