@@ -8,6 +8,7 @@
 #include <fstream>
 #include <csignal>
 #include <filesystem>
+#include <chrono>
 #include "EleshzAlgorithms.h"
 
 #include "ftxui/component/captured_mouse.hpp"  // for ftxui
@@ -27,8 +28,6 @@ bool ContinueRender = true;
 
 std::string Title();
 void clear();
-std::string FileExist(std::string GivenName);
-
 
 std::string EncodeStarter(std::string EncodeSelection);
 
@@ -55,7 +54,16 @@ std::span choice{ MenuChoice.begin() , MenuChoice.size() };
 
 int main() {
 
-    std::cout << "\n\n\n" << QuickSearch("C:/", "FabFilter Timeless 3.vst3", 0) << "\n\n\n";
+    using namespace std::chrono;
+
+    auto start = high_resolution_clock::now();
+    std::cout << "\n\n\n" << QuickSearch("C:/", "XRSettings.asset", 0) << "\n\n\n";
+    auto stop = high_resolution_clock::now();
+
+    auto duration = duration_cast<microseconds>(stop - start);
+
+    cout << "Time taken by function: "
+        << duration.count() / 1000000.0 << " seconds" << endl;
 
     using namespace ftxui;
 
@@ -228,9 +236,9 @@ std::string EncodeStarter(std::string EncodeSelection) {
 
     std::cout << "Perfect...\n\n";
     std::this_thread::sleep_for(std::chrono::milliseconds(500));
+}
 
-
-    try {
+    /* try {
 
         std::string InputDirectory;
         std::string OutputDirectory;
@@ -269,9 +277,9 @@ std::string EncodeStarter(std::string EncodeSelection) {
 
     system("pause");
     return "OK";
-}
+}*/
 
-void clear() { // Clear the screen
+    void clear() { // Clear the screen
 
     cin.sync();
     COORD topLeft = { 0, 0 };
@@ -290,72 +298,3 @@ void clear() { // Clear the screen
     SetConsoleCursorPosition(console, topLeft);
 }
 
-std::string FileExist(std::string GivenName)
-{
-    namespace fs = std::filesystem;
-
-    bool HasBeenFound = false;
-
-    std::vector<std::string> FolderList{};
-    std::vector<std::string> FileList;
-
-    FolderList.push_back("./");
-
-    while (true) {
-
-        std::cout << "I will be checking the " << FolderList[0] << " folder now.\n\n\n\n";
-
-
-            for (const auto& file : fs::directory_iterator(fs::path(FolderList[0]))) {
-
-                if (fs::is_directory(file)) {
-
-                    std::string Temp;
-
-                    std::cout << file << " <--- Folder \n";
-
-                    Temp = (file.path().string());
-
-                    Temp = Temp.substr(Temp.rfind("\\") + 1);
-
-                    FolderList.push_back(Temp);
-                }
-                else {
-                    std::cout << file << " <--- File \n";
-                    FileList.push_back(file.path().string());
-                }
-            }
-
-
-            std::cout << "\n\n";
-
-            for (const auto& File : FileList) {
-                if (File == GivenName) {
-                    return File + "/" + GivenName;
-                }
-                else {
-                    std::cout << File << " Was not equal to: " << GivenName << "\n";
-                }
-            }
-
-            std::cout << "\n" << FolderList.size() << "\n\n";
-            std::cout << "\n" << FileList.size() << "\n\n";
-
-            FolderList.erase(FolderList.begin());
-
-            for (const auto& File : FolderList) {
-                std::cout << File << "\n";
-            }
-
-
-
-            FileList.clear();
-            FileList.shrink_to_fit();
-
-            if (FolderList.empty()) {
-                std::cout << "\n\nNo more folders!! Couldn't find!!!\n";
-                return "Fail";
-            }
-
-    }
-}

@@ -1,3 +1,6 @@
 #include <string>
+#include <filesystem>
 
-std::string QuickSearch(std::string StartSearchLocation, std::string FileToBeFound, int NumberOfThreads);
+namespace fs = std::filesystem;
+
+fs::path QuickSearch(const fs::path StartSearchLocation, const fs::path FileToBeFound, const int ThreadsToStart);
